@@ -11,9 +11,11 @@
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "firebase": "^8.2.3",
+    "validator": "^13.5.2",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
-    "vuex": "^4.0.0-0"
+    "vuex": "^4.0.0-0",
+    "yup": "^0.32.8"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

@@ -19,8 +19,8 @@
           </li>
         </ul>
 
-        <router-link  :to="{ name: 'register' }" class="mr-3">Login</router-link> 
-        <router-link :to="{ name: 'login' }">Register</router-link> 
+        <router-link  :to="{ name: 'login' }" class="mr-3">Login</router-link> 
+        <router-link :to="{ name: 'register' }">Register</router-link> 
 
       </div>
     </div>
