@@ -18,14 +18,17 @@
               <router-link :to="{ name: 'testing' }" class="nav-link">Testing</router-link> 
           </li>
         </ul>
-
-        <router-link  :to="{ name: 'login' }" class="mr-3">Login</router-link> 
-        <router-link :to="{ name: 'register' }">Register</router-link> 
-
+        <div v-if="user.isLoggedIn.value == false">
+          <router-link :to="{ name: 'login' }" class="mr-3">Login</router-link> 
+          <router-link :to="{ name: 'register' }">Register</router-link> 
+        </div>
+        <div v-else>
+          <router-link :to="{ name: 'register' }">Logout</router-link> 
+        </div>
       </div>
     </div>
   </nav>
-
+     {{ user.isLoggedIn.value }}
 
   <div id="nav">
 
@@ -35,17 +38,19 @@
 
 <script>
 
-import { ref } from 'vue';
+import { useStore } from 'vuex';
+import { computed } from 'vue';
 
 
 
 export default {
   setup(){
-    const isLoggedIn = ref(true);
+    
+    const store = useStore();
 
     return {
       user: {
-        isLoggedIn: isLoggedIn
+        isLoggedIn: computed(() => store.state.user.id ? true : false ),
       }
     }
   }
