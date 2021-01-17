@@ -1,10 +1,24 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
+  <navigation></navigation>
   <router-view/>
+  <main-footer></main-footer>
 </template>
+
+
+<script>
+import Navigation from '@/components/header/Navigation.vue';
+import MainFooter from '@/components/footer/MainFooter.vue';
+
+export default {
+  mounted() {
+    console.log('mounted')
+  },
+  components: {
+    Navigation,
+    MainFooter
+  }
+}
+</script>
 
 <style lang="scss">
 #app {
