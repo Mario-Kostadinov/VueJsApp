@@ -44,7 +44,6 @@ import { useStore } from 'vuex';
 export default {
   props: ['id'],
   setup(props){
-    console.log(props)
     const store = useStore();
     const currentUser = computed(() => store.getters.getCurrentUser);
     
@@ -76,7 +75,6 @@ export default {
     })
 
     onMounted(() => {
-      console.log('Mounting')
       store.dispatch('courseDetail', {courseId: props.id})
     })
 
