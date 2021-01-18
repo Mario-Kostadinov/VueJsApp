@@ -10,13 +10,16 @@
           <h3>Course Description</h3>
           <p>{{ courseDetail.description }}</p>
         </div>
-        <div v-if="currentUser !== null" class="course-enroll">
+        <div v-if="currentUser !== null" class="course-enroll d-flex justify-content-center">
           <div v-if="isUserEnrolled">
             <span class="course-enroll__enrolled">Enrolled</span>
           </div>
           <div v-else>
             <button @click="handleEnrollButton" class="btn btn-primary course-enroll__enroll">Enroll</button>
           </div>          
+          <div v-if="isAdmin">
+            <button @click="handleEditButton" class="btn btn-warning course-enroll__enroll ml-3">Edit</button>
+          </div>
         </div>
         <div v-else>
           <p>To enroll please you need to <router-link :to="{ name: 'login' }" >Login</router-link> first</p>
@@ -40,11 +43,14 @@
 <script>
 import { computed ,onMounted, onUnmounted } from 'vue'
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
 export default {
   props: ['id'],
   setup(props){
     const store = useStore();
+    const router = useRouter();
+
     const currentUser = computed(() => store.getters.getCurrentUser);
     
     const handleEnrollButton = () => {
@@ -56,6 +62,11 @@ export default {
         courseId: courseId
       }
       store.dispatch('enrollIntoCourse', payload)
+    }
+
+    const handleEditButton = () => {
+      const courseId = props.id;
+      router.push(`/course/${courseId}/edit`)
     }
 
     const isUserEnrolled = computed(() => {
@@ -91,6 +102,8 @@ export default {
       currentUser: currentUser,
       handleEnrollButton: handleEnrollButton,
       isUserEnrolled: isUserEnrolled,
+      isAdmin: computed(() => store.getters.isAdmin),
+      handleEditButton: handleEditButton,
       courseLectures: computed(() => {
         return store.getters.getCourseLectures
       })

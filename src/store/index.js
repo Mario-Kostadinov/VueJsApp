@@ -155,6 +155,9 @@ export default createStore({
     getCurrentUser(state){
       console.log(state)
       return state.user !== null ? state.user : null
+    },
+    isAdmin(state){
+      return state.user !== null && state.user.role === 'admin' ? true : false;
     }
   }
 })
