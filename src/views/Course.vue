@@ -1,112 +1,103 @@
 <template>
   <div class="course-detail container">
-    <div v-if="loading != true" class="row">
+    <div v-if="courseDetail != false" class="row">
       <div class="col-7">
-        <h2>{{ courseData.title }}</h2>
-        <img :src="courseData.imageUrl" style="width: 100%" />
+        <h2>{{ courseDetail.title }}</h2>
+        <img :src="courseDetail.imageUrl" style="width: 100%" />
       </div>
       <div class="col-5">
         <div>
           <h3>Course Description</h3>
-          <p>{{ courseData.description }}</p>
+          <p>{{ courseDetail.description }}</p>
         </div>
-        <div class="course-enroll">
-          <div v-if="isEnrolled">
+        <div v-if="currentUser !== null" class="course-enroll">
+          <div v-if="isUserEnrolled">
             <span class="course-enroll__enrolled">Enrolled</span>
           </div>
           <div v-else>
             <button @click="handleEnrollButton" class="btn btn-primary course-enroll__enroll">Enroll</button>
           </div>          
         </div>
+        <div v-else>
+          <p>To enroll please you need to <router-link :to="{ name: 'login' }" >Login</router-link> first</p>
+        </div>
       </div>
     </div>
     <div v-else>
       Loading...
     </div>
-    <div v-if="isEnrolled == true">
+
+    <div v-if="isUserEnrolled !== null">
       <p>Course Lectures</p>
       <p v-for="lecture in courseLectures" :key="lecture.title">{{ lecture.title }}</p>
+    </div>
+    <div v-else>
+      <p> To get full access please enroll the course</p>
     </div>
   </div>
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue'
+import { computed ,onMounted, onUnmounted } from 'vue'
 import { useStore } from 'vuex';
 
 export default {
   props: ['id'],
   setup(props){
-
+    console.log(props)
     const store = useStore();
-    const userId = computed(() => {
-      return store.state.user.id;
-    })
-
-    const courseLectures = ref([])
-
-    const courseData = ref({})
-    const loading = ref(true)
-
-    const isEnrolled = computed(() => {
-      const enrolledUsersIntoCourse = courseData.value.enrolledUserIds;
-      const userEnrolled = enrolledUsersIntoCourse && enrolledUsersIntoCourse.includes(userId.value.toString())
-      if(userEnrolled === true) fetchLectures(props.id)
-      return userEnrolled;
-    });
-
-    const enrollUserIntoCourse = (courseId, userId) => {
-  
-      let api = `/api/courses/${courseId}/enroll`
-      fetch(api, {
-        method: "POST",
-        body: JSON.stringify({user_id: userId})
-      })
-        .then((res) => {
-          var response = JSON.parse(res._bodyText)
-          courseData.value = response.course;
-      })
-    }
-
-    const fetchLectures = (courseId) => {
-      let api = `/api/courses/${courseId}/lectures`;
-      fetch(api)
-        .then((res) => {
-          var response = JSON.parse(res._bodyText)
-          courseLectures.value = response.lectures
-      })
-    }
-
-    const fetchCourse = (courseId) => {
-      console.log('fetching')
-      let api = `/api/courses/${courseId}`;
-      fetch(api)
-        .then((res) => {
-          var response = JSON.parse(res._bodyText)
-          loading.value = false;
-          courseData.value = response.course;
-      })
-    }
-
+    const currentUser = computed(() => store.getters.getCurrentUser);
+    
     const handleEnrollButton = () => {
-      const user_id = userId.value;
+      const user_id = currentUser.value.id;
       const courseId = props.id;
-      enrollUserIntoCourse(courseId, user_id)
+
+      const payload = {
+        userId: user_id,
+        courseId: courseId
+      }
+      store.dispatch('enrollIntoCourse', payload)
     }
+
+    const isUserEnrolled = computed(() => {
+      const courseDetail = store.getters.getCourseDetail;
+      if(courseDetail !== null){
+
+        if (currentUser.value === null){
+          return null;
+        }
+
+        if (courseDetail.enrolledUserIds.includes(currentUser.value.id.toString())){
+          store.dispatch('fetchLectures', {courseId: courseDetail.id})
+          return true;
+        }
+      }
+      return null;
+    })
 
     onMounted(() => {
-      fetchCourse(props.id)
+      console.log('Mounting')
+      store.dispatch('courseDetail', {courseId: props.id})
     })
 
+    onUnmounted(() => {
+      store.commit('unmountCourseDetail')
+    })
+    
+
     return {
-      courseData,
-      loading,
-      isEnrolled,
-      handleEnrollButton,
-      courseLectures
+      courseDetail: computed(() => {
+        console.log('return courseDetail Computed')
+        return store.getters.getCourseDetail;
+      }),
+      currentUser: currentUser,
+      handleEnrollButton: handleEnrollButton,
+      isUserEnrolled: isUserEnrolled,
+      courseLectures: computed(() => {
+        return store.getters.getCourseLectures
+      })
     }
   }
-
 }
 </script>
 

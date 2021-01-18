@@ -5,8 +5,10 @@ export default createStore({
   state(){
     return {
       counter: 0,
-      courseData: {},
-      user: {},
+      courseDetail: null,
+      courseLectures: [],
+      courses: [],
+      user: null,
       flashMessage: {}
     }
   },
@@ -24,13 +26,31 @@ export default createStore({
       state.user = payload.user
     },
     logoutUser(state){
-      state.user = {}
+      state.user = null
     },
     flashMessage(state, payload){
       state.flashMessage = payload
+    },
+    updateCourseDetail(state, payload){
+      state.courseDetail = payload.course
+    },
+    updateLectures(state, payload){
+      console.log(payload.lectures)
+      state.courseLectures = payload.lectures
+    },
+    unmountCourseDetail(state){
+      state.courseDetail = null;
     }
   },
   actions: {
+    courseDetail(context, payload){
+      const api = `/api/courses/${payload.courseId}`;
+      fetch(api)
+        .then((res) => {
+          var response = JSON.parse(res._bodyText)
+          context.commit('updateCourseDetail', response)
+      })
+    },
     logout(context) {
       // query for logging in
       let api = `/api/logout`
@@ -45,6 +65,31 @@ export default createStore({
           })
           // courseData.value = response.course;
       })
+    },
+    enrollIntoCourse(context, payload) {
+        // query for logging in
+        let api = `/api/courses/${payload.courseId}/enroll`
+        fetch(api, {
+          method: "POST",
+          body: JSON.stringify({user_id: payload.userId})
+        })
+          .then(() => {   
+            context.dispatch('courseDetail', {courseId: payload.courseId})
+            context.dispatch('fetchLectures', {courseId: payload.courseId})
+            context.commit('flashMessage', {
+              type: 'success',
+              message: 'Enrolled successfully!'
+            })
+        
+        })
+    },
+    fetchLectures(context, payload) {
+        let api = `/api/courses/${payload.courseId}/lectures`;
+        fetch(api)
+          .then((res) => {
+            var response = JSON.parse(res._bodyText)
+            context.commit('updateLectures', response)
+        })
     },
     async register(context, payload) {
         // query for logging in
@@ -94,32 +139,22 @@ export default createStore({
               })
             }
             // courseData.value = response.course;
-        })
-
-    },
-    fetchCourseData(context, payload) {
-      context.commit('increment', payload)
-    },
-    increment(context) {
-      return new Promise((resolve, reject) => {
-        try {
-          setTimeout(() => {
-            console.log('After 1 second')
-            context.commit('increment')
-            resolve()
-          }, 1000)
-        } catch(e) {
-          reject(e)
-        }
       })
     }
   },
   getters: {
-    finalCounter(state) {
-      return state.counter + 10;
-    },
     flashMessage(state) {
       return state.flashMessage
+    },
+    getCourseDetail(state) {
+      return state.courseDetail === null ? false : state.courseDetail
+    },
+    getCourseLectures(state) {
+      return state.courseLectures === null ? null : state.courseLectures
+    },
+    getCurrentUser(state){
+      console.log(state)
+      return state.user !== null ? state.user : null
     }
   }
 })

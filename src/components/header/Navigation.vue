@@ -19,7 +19,7 @@
                 <router-link :to="{ name: 'testing' }" class="nav-link">Testing</router-link> 
             </li>
           </ul>
-          <div v-if="user.isLoggedIn.value == false">
+          <div v-if="currentUser === null">
             <router-link :to="{ name: 'login' }" class="mr-3">Login</router-link> 
             <router-link :to="{ name: 'register' }">Register</router-link> 
           </div>
@@ -45,8 +45,6 @@
 import { useStore } from 'vuex';
 import { computed } from 'vue';
 
-
-
 export default {
   setup(){
     
@@ -57,10 +55,7 @@ export default {
     }
 
     return {
-      user: {
-        isLoggedIn: computed(() => store.state.user.id ? true : false ),
-      },
-      currentUser: computed(() => store.state.user),
+      currentUser: computed(() => store.getters.getCurrentUser),
       flashMessage: computed(() => store.getters.flashMessage),
       handleLogout: handleLogout
     }
