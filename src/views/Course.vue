@@ -78,6 +78,7 @@ export default {
     }
 
     const fetchCourse = (courseId) => {
+      console.log('fetching')
       let api = `/api/courses/${courseId}`;
       fetch(api)
         .then((res) => {

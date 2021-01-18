@@ -46,6 +46,30 @@ export default createStore({
           // courseData.value = response.course;
       })
     },
+    async register(context, payload) {
+        // query for logging in
+        let api = `/api/register`
+        await fetch(api, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        })
+          .then((res) => {
+            var response = JSON.parse(res._bodyText)
+            console.log('is this a response')
+            console.log(response)
+            if(response.message === 'failed to register'){
+              // push fail              
+            } else {
+              //success 
+              context.commit('authenticateUser', response)
+              context.commit('flashMessage', {
+                type: 'success',
+                message: 'Register successfully!'
+              })
+            }
+            // courseData.value = response.course;
+        })
+    },
     async login(context, payload) {
       console.log('Login action hit')
   

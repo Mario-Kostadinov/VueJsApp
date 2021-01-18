@@ -75,26 +75,17 @@ export default {
         passwordValidity.value = true;
       }
 
-      console.log('handaling')
-
-      // if(formEmail.valid && formPassword.valid) {
-        
+      // if(formEmail.valid && formPassword.valid) {   
         const payload = {
           username: email.value,
           password: password.value
         }
-
         await store.dispatch('login', payload)
 
         router.push({
           name: 'home'
         })
 
-        console.log('finished')
-        // router.push({
-        //   name: 'home'
-        // })
-      // }
     }
 
     return {

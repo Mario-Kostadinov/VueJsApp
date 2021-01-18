@@ -63,6 +63,7 @@ export function makeServer({ environment = "development" } = {}) {
           }
         }
       })
+
       this.get("/logout", () => {
         return {message: 'success'}
       })
@@ -73,20 +74,36 @@ export function makeServer({ environment = "development" } = {}) {
         let user_id = attrs.user_id
         let findCourseById = db.courses.find(course_id)
         let enrolledUsersSlice = findCourseById.attrs.enrolledUserIds.slice();
-        console.log(enrolledUsersSlice)
         enrolledUsersSlice.push(user_id)
-        console.log('----enrolling-----')
         findCourseById.attrs.enrolledUserIds = enrolledUsersSlice;
-        findCourseById.save();
-        console.log(findCourseById)
-        // db.courses.update(1, {enrolledUsers: enrolledUsersSlice})
-        // schema.users.update(1, {name: 'Young Link'});
-        // let a = db.courses.update({name: 'Ganon'});
-        // findCourseById.update('enrolledUsers', enrolledUsersSlice)    
+        findCourseById.save();   
         return findCourseById
+      }),
+      this.post("/register", (schema, request) => {
+        console.log('-----registers-----')
+        let attrs = JSON.parse(request.requestBody)
+        console.log(attrs)
+        const newUser = {
+          username: attrs.username,
+          password: attrs.password,
+          role: 'user',
+          enrolledCourses: []
+        }
+      
+        const user = server.schema.users.create(newUser);
+      
+        if (user === null) {
+          return {
+            message: 'failed to register'
+          }
+        } else {
+          return {
+            message: 'success',
+            user: user.attrs 
+          }
+        }
       })
-
-    },
+    }
   })
   server.logging = true;
   return server

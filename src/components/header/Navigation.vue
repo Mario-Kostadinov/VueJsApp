@@ -30,7 +30,7 @@
       </div>
     </nav>
 
-
+    {{ currentUser }}
     <div v-if="flashMessage.message" :class="'alert-'+flashMessage.type" class="alert alert-dismissible fade show" role="alert">
       {{ flashMessage.message }}
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">

@@ -20,34 +20,36 @@
 
 <script>
 
-import { ref, onBeforeMount, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref } from 'vue';
+import { useStore } from 'vuex';
+
+// import { useRouter } from 'vue-router';
 
 
 export default {
   setup() {
-
-    const router = useRouter();
+    
+    const store = useStore();
+    // const router = useRouter();
 
     const email = ref('mario@gmai.com');
-    const password = ref(null);
-    const passwordConfirm = ref(null);
+    const password = ref('123456');
+    const passwordConfirm = ref('123456');
 
-    const handleFormSubmission = () => {
+    const handleFormSubmission = async () => {
+       
+      const payload = {
+        username: email.value,
+        password: password.value
+      }
 
-      router.push({
-        name: 'home'
-      })
+      await store.dispatch('register', payload)
+
+      // router.push({
+      //   name: 'home'
+      // })
 
     }
-
-    onBeforeMount(() => {
-      console.log('Fetching data')
-    })
-
-    onMounted(() => {
-      console.log('rendering')
-    })
 
 
 
