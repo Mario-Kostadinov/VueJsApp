@@ -6,49 +6,57 @@
         <img :src="courseData.imageUrl" style="width: 100%" />
       </div>
       <div class="col-5">
+        <div>
+          <h3>Course Description</h3>
+          <p>{{ courseData.description }}</p>
+        </div>
         <div class="course-enroll">
           <div v-if="isEnrolled">
             <span class="course-enroll__enrolled">Enrolled</span>
           </div>
           <div v-else>
-            <button @click="enrollUser" class="btn btn-primary course-enroll__enroll">Enroll</button>
-          </div>
-          
+            <button @click="handleEnrollButton" class="btn btn-primary course-enroll__enroll">Enroll</button>
+          </div>          
         </div>
       </div>
     </div>
     <div v-else>
-      Loading
+      Loading...
+    </div>
+    <div v-if="isEnrolled == true">
+      <p>Course Lectures</p>
+      <p v-for="lecture in courseLectures" :key="lecture.title">{{ lecture.title }}</p>
     </div>
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useStore } from 'vuex';
+
 export default {
   props: ['id'],
   setup(props){
 
+    const store = useStore();
+    const userId = computed(() => {
+      return store.state.user.id;
+    })
+
+    const courseLectures = ref([])
+
     const courseData = ref({})
     const loading = ref(true)
-    // const userId = ref(3)
-   
-    // const isEnrolled = computed(()=>{
-    //   return courseData.value.enrolledUsers.indexOf(userId) === -1 ? false : true
-    // })
-    const isEnrolled = ref(false);
 
-    const enrollUser = (userId) => {
-
-      enrollUserIntoCourse(2, 1)
-      console.log(userId)
-      console.log('Enrolling User')
-      console.log(userId)
-      isEnrolled.value = true;
-      return true
-    }
+    const isEnrolled = computed(() => {
+      const enrolledUsersIntoCourse = courseData.value.enrolledUserIds;
+      const userEnrolled = enrolledUsersIntoCourse && enrolledUsersIntoCourse.includes(userId.value.toString())
+      if(userEnrolled === true) fetchLectures(props.id)
+      return userEnrolled;
+    });
 
     const enrollUserIntoCourse = (courseId, userId) => {
+  
       let api = `/api/courses/${courseId}/enroll`
       fetch(api, {
         method: "POST",
@@ -60,8 +68,17 @@ export default {
       })
     }
 
-    const fetchCourse = () => {
-      let api = '/api/courses/2'
+    const fetchLectures = (courseId) => {
+      let api = `/api/courses/${courseId}/lectures`;
+      fetch(api)
+        .then((res) => {
+          var response = JSON.parse(res._bodyText)
+          courseLectures.value = response.lectures
+      })
+    }
+
+    const fetchCourse = (courseId) => {
+      let api = `/api/courses/${courseId}`;
       fetch(api)
         .then((res) => {
           var response = JSON.parse(res._bodyText)
@@ -70,16 +87,22 @@ export default {
       })
     }
 
+    const handleEnrollButton = () => {
+      const user_id = userId.value;
+      const courseId = props.id;
+      enrollUserIntoCourse(courseId, user_id)
+    }
+
     onMounted(() => {
-      console.log('mounted')
       fetchCourse(props.id)
-    
     })
+
     return {
       courseData,
       loading,
       isEnrolled,
-      enrollUser,
+      handleEnrollButton,
+      courseLectures
     }
   }
 
