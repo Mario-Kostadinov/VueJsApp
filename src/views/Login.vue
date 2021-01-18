@@ -2,8 +2,8 @@
   <div class="register container">
     <form @submit.prevent="handleFormSubmission" class="shadow pl-4 pr-4 pt-5 pb-5">
       <div class="form-group">
-        <label for="exampleInputEmail1">Email address</label>
-        <input class="form-control" :class="[emailValidityClass]" v-model.trim="form.email.value" type="email" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+        <label for="exampleInputEmail1">Username</label>
+        <input class="form-control" :class="[emailValidityClass]" v-model.trim="form.email.value" type="text" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
         <div class="invalid-feedback">
           <p>{{ emailError }}</p>
         </div>
@@ -24,17 +24,18 @@
 
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-
+import { useStore } from 'vuex';
 import formValidations from '../utils/formValidations.js';
 
 export default {
   setup() {
 
     const router = useRouter();
+    const store = useStore();
 
-    const email = ref('');
+    const email = ref('admin');
     const emailError = ref('');
-    const password = ref('');
+    const password = ref('ewqqweqwewq');
     const passwordError = ref('');
 
     const emailValidity = ref(null)
@@ -56,9 +57,7 @@ export default {
       }
     })
 
-  
-    const handleFormSubmission = () => {
-
+    const handleFormSubmission = async () => {
       const formEmail = formValidations.validateEmail(email.value)
       if(!formEmail.valid){
         emailValidity.value = false;
@@ -76,11 +75,26 @@ export default {
         passwordValidity.value = true;
       }
 
-      if(formEmail.valid && formPassword.valid) {
+      console.log('handaling')
+
+      // if(formEmail.valid && formPassword.valid) {
+        
+        const payload = {
+          username: email.value,
+          password: password.value
+        }
+
+        await store.dispatch('login', payload)
+
         router.push({
           name: 'home'
         })
-      }
+
+        console.log('finished')
+        // router.push({
+        //   name: 'home'
+        // })
+      // }
     }
 
     return {

@@ -1,28 +1,34 @@
 <template>
   <div>
     Counter {{ count }}
-    <p>A: {{ a }}</p>
+    <button @click="handleClick">Increase Counter</button>
+    <button @click="handleClickByTen">Increase Counter</button>
+    <hr>
+    <div>plus 10: {{ plusten }}</div>
   </div>
 </template>
 
 <script>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useStore } from 'vuex';
 export default {
   setup() {
     const store = useStore()
-    const a = ref([1,2])
-    fetch("/api/courses")
-    .then((res) => res.json())
-    .then((json) => {
-      // this.users = json.users
-      console.log(json.courses)
-      a.value = [1,2]
-    })
+    
+  
+    const handleClick = () => {
+      store.commit('increase', { value: 10 })
+    }
+    const handleClickByTen = () => {
+      store.dispatch('increment')
+    }
+
 
     return {
       count: computed(() => store.state.counter),
-      a: a
+      handleClick: handleClick,
+      handleClickByTen:handleClickByTen,
+      plusten: computed(() => store.getters.finalCounter)
     }
   }
 }

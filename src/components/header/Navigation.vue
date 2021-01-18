@@ -1,37 +1,42 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-      <a class="navbar-brand" href="#">VueCourses</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+  <div class="mb-5">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="#">VueCourses</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <router-link :to="{ name: 'home' }" class="nav-link">Home</router-link> 
-          </li>
-          <li class="nav-item">
-            <router-link :to="{ name: 'course-add' }" class="nav-link">Add Course</router-link> 
-          </li>
-          <li class="nav-item">
-              <router-link :to="{ name: 'testing' }" class="nav-link">Testing</router-link> 
-          </li>
-        </ul>
-        <div v-if="user.isLoggedIn.value == false">
-          <router-link :to="{ name: 'login' }" class="mr-3">Login</router-link> 
-          <router-link :to="{ name: 'register' }">Register</router-link> 
-        </div>
-        <div v-else>
-          <router-link :to="{ name: 'register' }">Logout</router-link> 
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <router-link :to="{ name: 'home' }" class="nav-link">Home</router-link> 
+            </li>
+            <li class="nav-item">
+              <router-link :to="{ name: 'course-add' }" class="nav-link">Add Course</router-link> 
+            </li>
+            <li class="nav-item">
+                <router-link :to="{ name: 'testing' }" class="nav-link">Testing</router-link> 
+            </li>
+          </ul>
+          <div v-if="user.isLoggedIn.value == false">
+            <router-link :to="{ name: 'login' }" class="mr-3">Login</router-link> 
+            <router-link :to="{ name: 'register' }">Register</router-link> 
+          </div>
+          <div v-else>
+            <button @click="handleLogout">Logout</button> 
+          </div>
         </div>
       </div>
+    </nav>
+
+
+    <div v-if="flashMessage.message" :class="'alert-'+flashMessage.type" class="alert alert-dismissible fade show" role="alert">
+      {{ flashMessage.message }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
     </div>
-  </nav>
-  
-  <div id="nav">
-
-
   </div>
 </template>
 
@@ -47,10 +52,17 @@ export default {
     
     const store = useStore();
 
+    const handleLogout = () => {
+      store.dispatch('logout')
+    }
+
     return {
       user: {
         isLoggedIn: computed(() => store.state.user.id ? true : false ),
-      }
+      },
+      currentUser: computed(() => store.state.user),
+      flashMessage: computed(() => store.getters.flashMessage),
+      handleLogout: handleLogout
     }
   }
 }

@@ -22,8 +22,7 @@
 
 import { ref, onBeforeMount, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import  firebase from 'firebase';
-import "firebase/auth";
+
 
 export default {
   setup() {
@@ -35,19 +34,6 @@ export default {
     const passwordConfirm = ref(null);
 
     const handleFormSubmission = () => {
-      console.log('Handling form submission')
-      console.log(email.value)
-      console.log(password.value)
-      console.log(passwordConfirm.value)
-
-      firebase.auth().createUserWithEmailAndPassword(email.value, password.value)
-      .then((user) => {
-        console.log('User Created')
-        console.log(user)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
 
       router.push({
         name: 'home'
