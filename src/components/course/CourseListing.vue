@@ -2,12 +2,12 @@
   <div class="course-listing">
     <div class="container">
       <div class="row">
-        <div class="col-4" v-for="course in courses" :key="course.id">
-          <course-item 
-            :title="course.title"
-            :description="course.description"
-            :image-url="course.imageUrl"
-            :slug="course.slug"
+        <div class="col-4" v-for="course in courses" :key="course.id"> 
+        <course-item 
+          :title="course.title" 
+          :id="course.id"
+          :description="course.description"
+          :image-url="course.imageUrl"
           ></course-item>
         </div>
       </div>
@@ -17,34 +17,26 @@
 
 <script>
 
-import { reactive } from 'vue';
+import { ref, onMounted } from 'vue';
 import CourseItem from '@/components/course/CourseItem.vue';
+
 
 export default {
   setup(){
-    const courses = reactive([
-      {
-        id: 1,
-        title: 'Firstt Course',
-        description: 'First Desc',
-        imageUrl: "https://images.unsplash.com/photo-1585076641399-5c06d1b3365f?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-        slug: '/course/slug1'
-      },
-      {
-        id: 2,
-        title: 'Second Course',
-        description: 'Second Desc',
-        imageUrl: "https://images.unsplash.com/photo-1585076641399-5c06d1b3365f?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-        slug: '/course/slug2'
-     },
-      {
-        id: 3,
-        title: 'Third Course',
-        description: 'Third Desc',
-        imageUrl: "https://images.unsplash.com/photo-1585076641399-5c06d1b3365f?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-        slug: '/course/slug3'
-      }
-    ])
+    const courses = ref()
+
+    const fetchCourse = () => {
+      fetch("/api/courses")
+        .then((res) => {
+          var response = JSON.parse(res._bodyText)
+          console.log(response.courses[0].id)
+          courses.value = response.courses;
+      })
+    }
+
+    onMounted(() =>{
+      fetchCourse()
+    })
 
     return {
       courses: courses

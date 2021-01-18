@@ -1,6 +1,6 @@
 <template>
-  <router-link :to="slug" class="course-item">
   
+  <router-link :to="'/course/'+id" class="course-item">
     <img class="course-item__image" :src="imageUrl" />
     <h2 class="course-item__title">{{ title }}</h2>
     <p class="course-item__description">{{ description }}</p>
@@ -15,7 +15,7 @@ export default {
     'imageUrl',
     'title',
     'description',
-    'slug'
+    'id'
   ]
 }
 </script>

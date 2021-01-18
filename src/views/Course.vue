@@ -26,7 +26,7 @@
 <script>
 import { ref, onMounted } from 'vue'
 export default {
-  props: ['slug'],
+  props: ['id'],
   setup(props){
 
     const courseData = ref({})
@@ -46,22 +46,33 @@ export default {
       return true
     }
 
-    const fetchCourse = courseSlug => {
-      console.log('Fetching course: ', courseSlug)
-      setTimeout(()=>{
-        courseData.value = {
-          title: 'Demo Title 1',
-          imageUrl: "https://images.unsplash.com/photo-1585076641399-5c06d1b3365f?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-          enrolledUsers: [1,2]
-        }
-        loading.value = false;
-      },1000)
+    const enrollUserIntoCourse = () => {
+      let api = '/api/courses/12/enroll'
+      fetch(api, {
+        method: "POST",
+        body: JSON.stringify({user_id: 2})
+      })
+        .then((res) => {
+          var response = JSON.parse(res._bodyText)
+          console.log(response)
+      })
+    }
 
+    const fetchCourse = () => {
+      let api = '/api/courses/2'
+      fetch(api)
+        .then((res) => {
+          var response = JSON.parse(res._bodyText)
+          loading.value = false;
+          courseData.value = response.course;
+          console.log(response.course)
+      })
     }
 
     onMounted(() => {
       console.log('mounted')
-      fetchCourse(props.slug)
+      fetchCourse(props.id)
+      enrollUserIntoCourse()
       
     })
     return {

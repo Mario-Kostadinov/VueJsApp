@@ -28,8 +28,7 @@
       </div>
     </div>
   </nav>
-     {{ user.isLoggedIn.value }}
-
+  
   <div id="nav">
 
 
