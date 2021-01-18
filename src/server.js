@@ -20,7 +20,6 @@ export function makeServer({ environment = "development" } = {}) {
       })
     },
     seeds(server) {
-
       let admin = server.create("user", { name: "admin", role: 'admin', password: 'admin', enrolledCourses: [] })
       let bob = server.create("user", { name: "Bob", role: "user", password: 'bob', enrolledCourses: [] })
       let alice = server.create("user", { name: "Alice", role: "user", password: 'alice', enrolledCourses: [] })
@@ -43,10 +42,23 @@ export function makeServer({ environment = "development" } = {}) {
         return db.courses.find(request.params.id)
       })
       this.post("/courses/:id/enroll", (db, request) => {
+    
         let attrs = JSON.parse(request.requestBody)
-        console.log(request.params.id)
-        console.log(attrs.user_id)
-        return db.courses.all()
+        let course_id = request.params.id;
+        let user_id = attrs.user_id
+        let findCourseById = db.courses.find(course_id)
+        let enrolledUsersSlice = findCourseById.attrs.enrolledUserIds.slice();
+        console.log(enrolledUsersSlice)
+        enrolledUsersSlice.push(user_id)
+        console.log('----enrolling-----')
+        findCourseById.attrs.enrolledUserIds = enrolledUsersSlice;
+        findCourseById.save();
+        console.log(findCourseById)
+        // db.courses.update(1, {enrolledUsers: enrolledUsersSlice})
+        // schema.users.update(1, {name: 'Young Link'});
+        // let a = db.courses.update({name: 'Ganon'});
+        // findCourseById.update('enrolledUsers', enrolledUsersSlice)    
+        return findCourseById
       })
 
     },

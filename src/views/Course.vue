@@ -39,6 +39,8 @@ export default {
     const isEnrolled = ref(false);
 
     const enrollUser = (userId) => {
+
+      enrollUserIntoCourse(2, 1)
       console.log(userId)
       console.log('Enrolling User')
       console.log(userId)
@@ -46,15 +48,15 @@ export default {
       return true
     }
 
-    const enrollUserIntoCourse = () => {
-      let api = '/api/courses/12/enroll'
+    const enrollUserIntoCourse = (courseId, userId) => {
+      let api = `/api/courses/${courseId}/enroll`
       fetch(api, {
         method: "POST",
-        body: JSON.stringify({user_id: 2})
+        body: JSON.stringify({user_id: userId})
       })
         .then((res) => {
           var response = JSON.parse(res._bodyText)
-          console.log(response)
+          courseData.value = response.course;
       })
     }
 
@@ -65,21 +67,19 @@ export default {
           var response = JSON.parse(res._bodyText)
           loading.value = false;
           courseData.value = response.course;
-          console.log(response.course)
       })
     }
 
     onMounted(() => {
       console.log('mounted')
       fetchCourse(props.id)
-      enrollUserIntoCourse()
-      
+    
     })
     return {
       courseData,
       loading,
       isEnrolled,
-      enrollUser
+      enrollUser,
     }
   }
 
