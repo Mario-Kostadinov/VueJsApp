@@ -147,7 +147,7 @@ export default createStore({
       return state.flashMessage
     },
     getCourseDetail(state) {
-      return state.courseDetail === null ? false : state.courseDetail
+      return state.courseDetail === null ? null : state.courseDetail
     },
     getCourseLectures(state) {
       return state.courseLectures === null ? null : state.courseLectures

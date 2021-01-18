@@ -1,6 +1,6 @@
 <template>
   <div class="course-detail container">
-    <div v-if="courseDetail != false" class="row">
+    <div v-if="courseDetail !== null" class="row">
       <div class="col-7">
         <h2>{{ courseDetail.title }}</h2>
         <img :src="courseDetail.imageUrl" style="width: 100%" />
