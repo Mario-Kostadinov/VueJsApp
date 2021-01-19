@@ -1,13 +1,12 @@
 import { createStore } from 'vuex'
 
-
 export default createStore({
   state(){
     return {
       counter: 0,
       courseDetail: null,
       courseLectures: [],
-      courses: [],
+      courses: null,
       user: null,
       flashMessage: {}
     }
@@ -37,6 +36,11 @@ export default createStore({
     updateLectures(state, payload){
       console.log(payload.lectures)
       state.courseLectures = payload.lectures
+    },
+    updateCourses(state, payload){
+      console.log('Mutations')
+      console.log(payload.courses)
+      state.courses = payload.courses
     },
     unmountCourseDetail(state){
       state.courseDetail = null;
@@ -90,6 +94,39 @@ export default createStore({
             var response = JSON.parse(res._bodyText)
             context.commit('updateLectures', response)
         })
+    },
+    fetchCourses(context) {
+        let api = `/api/courses`;
+        fetch(api)
+          .then((res) => {
+            var response = JSON.parse(res._bodyText)
+            context.commit('updateCourses', response)
+        })
+    },
+    addCourse(context, payload){
+      console.log('Adding Course')
+      // query for logging in
+      let api = `/api/course`
+      fetch(api, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      })
+        .then((res) => {
+          var response = JSON.parse(res._bodyText)
+          console.log('is this a response')
+          console.log(response)
+          if(response.message === 'failed to register'){
+            // push fail              
+          } else {
+            //success 
+            context.dispatch('fetchCourses')
+            context.commit('flashMessage', {
+              type: 'success',
+              message: 'New course created successfully!'
+            })
+          }
+          // courseData.value = response.course;
+      })
     },
     async register(context, payload) {
         // query for logging in
@@ -158,6 +195,9 @@ export default createStore({
     },
     isAdmin(state){
       return state.user !== null && state.user.role === 'admin' ? true : false;
+    },
+    getAllCourses(state) {
+      return state.courses !== null ? state.courses : null;
     }
   }
 })

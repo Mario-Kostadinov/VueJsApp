@@ -17,29 +17,25 @@
 
 <script>
 
-import { ref, onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import CourseItem from '@/components/course/CourseItem.vue';
+import { useStore } from 'vuex';
 
 
 export default {
   setup(){
-    const courses = ref()
 
-    const fetchCourse = () => {
-      fetch("/api/courses")
-        .then((res) => {
-          var response = JSON.parse(res._bodyText)
-          console.log(response.courses[0].id)
-          courses.value = response.courses;
-      })
-    }
+    const store = useStore()
 
     onMounted(() =>{
-      fetchCourse()
+      store.dispatch('fetchCourses')
     })
 
     return {
-      courses: courses
+      courses: computed(() => {
+        console.log('Computed in all courses')
+        return store.getters.getAllCourses
+      })
     }
   },
   components: {

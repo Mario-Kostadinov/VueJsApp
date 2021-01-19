@@ -25,7 +25,7 @@
           </div>
           <div v-else>
             <span class="welcome--username">Welcome, {{ currentUser.username }}</span>
-            <button @click="handleLogout">Logout</button> 
+            <button class="btn" style="color: #fff" @click="handleLogout">Logout</button> 
           </div>
         </div>
       </div>

@@ -3,7 +3,9 @@ import Home from '../views/Home.vue'
 import CourseDetail from '../views/Course.vue'
 import Register from '../views/Register.vue'
 import Login from '../views/Login.vue'
-import AddCourse from '../views/Login.vue'
+import AddCourse from '../views/AddCourse.vue'
+import EditCourse from '../views/EditCourse.vue'
+import AddLecture from '../views/AddLecture.vue'
 
 const routes = [
   {
@@ -23,6 +25,18 @@ const routes = [
     path: '/course/:id',
     name: 'course-detail',
     component: CourseDetail,
+    props: true
+  },
+  {
+    path: '/course/:id/edit',
+    name: 'course-edit',
+    component: EditCourse,
+    props: true
+  },
+  {
+    path: '/course/:id/lecture',
+    name: 'course-add-lecture',
+    component: AddLecture,
     props: true
   },
   {

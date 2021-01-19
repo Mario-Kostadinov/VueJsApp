@@ -66,7 +66,30 @@ export function makeServer({ environment = "development" } = {}) {
 
       this.get("/logout", () => {
         return {message: 'success'}
-      })
+      }),
+      this.post("/course", (schema, request) => {
+        let attrs = JSON.parse(request.requestBody) 
+        const newCourse = {
+          title: attrs.courseTitle,
+          description: attrs.courseDescription,
+          imageUrl: attrs.courseImageUrl,
+          isPublic: attrs.isPublic
+        } 
+        server.schema.courses.create(newCourse);
+        
+      }),
+      this.post("/courses/:id/lecture", (db, request) => {
+    
+        let attrs = JSON.parse(request.requestBody)
+        let course_id = request.params.id;
+        let user_id = attrs.user_id
+        let findCourseById = db.courses.find(course_id)
+        let enrolledUsersSlice = findCourseById.attrs.enrolledUserIds.slice();
+        enrolledUsersSlice.push(user_id)
+        findCourseById.attrs.enrolledUserIds = enrolledUsersSlice;
+        findCourseById.save();   
+        return findCourseById
+      }),
       this.post("/courses/:id/enroll", (db, request) => {
     
         let attrs = JSON.parse(request.requestBody)
