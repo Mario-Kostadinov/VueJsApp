@@ -170,6 +170,22 @@ export function makeServer({ environment = "development" } = {}) {
             user: user.attrs 
           }
         }
+      }),
+      this.post("/username/check", (db, request) => {
+        console.log('-----Checking username-----')
+        let attrs = JSON.parse(request.requestBody)    
+        console.log(attrs)  
+        const user = db.users.findBy({username: attrs.username})
+        console.log(user)
+        if (user === null) {
+          return {
+            exists: false
+          }
+        } else {
+          return {
+            exists: true
+          }
+        }
       })
     }
   })

@@ -3,16 +3,22 @@
     <h2 class="mb-4">Register</h2>
     <form @submit.prevent="handleFormSubmission" class="shadow pl-4 pr-4 pt-5 pb-5">
       <div class="form-group">
-        <label for="exampleInputEmail1">Email address</label>
-        <input v-model="form.email.value" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+        <label for="username">Username</label>
+        <input v-model="form.username.value" :class="[usernameValidityClass]" @change="handleUsernameCheck" type="text" class="form-control" id="username" placeholder="Username">
+        <div class="invalid-feedback">
+          <p>{{ usernameError }}</p>
+        </div>
       </div>
       <div class="form-group">
-        <label for="exampleInputPassword1">Password</label>
-        <input v-model="form.password.value" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+        <label for="passwowrd_one">Password</label>
+        <input v-model="form.password.value" :class="[passwordValidityClass]" type="password" class="form-control" id="password_one" placeholder="Password">
       </div>
       <div class="form-group">
-        <label for="exampleInputPassword2">Password</label>
-        <input v-model="form.passwordConfirm.value" type="password" class="form-control" id="exampleInputPassword2" placeholder="Password">
+        <label for="password_two">Password</label>
+        <input v-model="form.passwordConfirm.value" :class="[passwordValidityClass]" type="password" class="form-control" id="password_two" placeholder="Password Confirm">
+        <div class="invalid-feedback">
+          <p>Paswords are not matching</p>
+        </div>
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
       <p class="mt-4 mb-0">Already have an account?             
@@ -24,57 +30,129 @@
 
 <script>
 
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
 
-// import { useRouter } from 'vue-router';
-
+import { useRouter } from 'vue-router';
+// Utility functions for validating inputs
 
 export default {
   setup() {
     
     const store = useStore();
-    // const router = useRouter();
+    const router = useRouter();
 
-    const email = ref('mario@gmai.com');
+    const username = ref('');
+    const usernameError = ref('');
+    const usernameValidity = ref(null)
+
     const password = ref('123456');
     const passwordConfirm = ref('123456');
+    const passwordValidity = ref(null)
+    const passwordsMatch = ref(false)
+    const formValidity = ref(false)
+
+    /**
+     * @function
+     * @name usernameValidityClass
+     * @description Based on username validity ref return css class
+     * 
+     * @return CSS class for validity
+     */
+    const usernameValidityClass = computed(() => {
+      if (usernameValidity.value === null){
+        return;
+      } else {
+        return usernameValidity.value == true ? 'is-valid' : 'is-invalid';
+      }
+    })
+
+    /**
+     * @function
+     * @name passwordValidityClass
+     * @description Check if passwords match
+     * 
+     * @return CSS class for validity
+     */
+    const passwordValidityClass = computed(() => {
+      if (passwordValidity.value === null){
+        return;
+      } else {
+        return passwordValidity.value == true ? 'is-valid' : 'is-invalid';
+      }
+    })
 
     /**
      * @function
      * @name handleUsernameCheck
      * @description Check if username exists in DB
      * 
-     * @return true or false
     */
-
-    const handleUsernameCheck = () => {
-      console.log('Checking Username')
+    const handleUsernameCheck = async () => {
+      if(username.value === ''){
+        usernameValidity.value = false;
+        formValidity.value = false;
+        usernameError.value = 'Username is required';
+      } else {
+        try {
+          await store.dispatch('checkUsernameAvailability', {username: username.value})
+          usernameValidity.value = true;
+          formValidity.value = true;
+        } catch(e){
+          usernameValidity.value = false;
+          formValidity.value = false;
+          usernameError.value = 'Username taken';
+        }
+      }
     }
 
     const handleFormSubmission = async () => {
-       
-      const payload = {
-        username: email.value,
-        password: password.value
+
+      if(password.value !== passwordConfirm.value){
+        passwordsMatch.value = false;
+        formValidity.value = true;
+        passwordValidity.value = false;
+      } else {
+        passwordsMatch.value = true;
       }
 
-      await store.dispatch('register', payload)
+      if(usernameValidity.value !== true) {
+        handleUsernameCheck()
+      }
 
-      // router.push({
-      //   name: 'home'
-      // })
+      if(usernameValidity.value === true && passwordsMatch.value === true){
+        formValidity.value = true;
+      } else {
+        formValidity.value = false;
+      }
 
+       
+      const payload = {
+        username: username.value,
+        password: password.value
+      }
+      console.log('form validity: ',formValidity.value)
+      if(formValidity.value) {
+        try {
+          await store.dispatch('register', payload)
+          router.push({
+            name: 'home'
+          })
+        } catch(e){
+          console.log(e)
+          console.log('catching eerr')
+        }
+      }
     }
-
-
-
 
     return {
       handleFormSubmission: handleFormSubmission,
       handleUsernameCheck: handleUsernameCheck,
+      usernameValidityClass: usernameValidityClass,
+      passwordValidityClass: passwordValidityClass,
+      usernameError: usernameError,
       form: {
-        email: email,
+        username: username,
         password: password,
         passwordConfirm: passwordConfirm
       }

@@ -40,10 +40,10 @@ export default {
     const router = useRouter();
     const store = useStore();
 
-    const username = ref('admin');
+    const username = ref('');
     const usernameError = ref('');
 
-    const password = ref('asdasdsadasdads');
+    const password = ref('');
     const passwordError = ref('');
 
     const usernameValidity = ref(null)
@@ -69,7 +69,7 @@ export default {
      * 
      * @return CSS class for validity
      */
-    let usernameValidityClass = computed(() => {
+    const usernameValidityClass = computed(() => {
       if (usernameValidity.value === null){
         return;
       } else {
@@ -84,7 +84,7 @@ export default {
      * 
      * @return CSS class for validity
      */
-    let passwordValidityClass = computed(() => {
+    const passwordValidityClass = computed(() => {
       if (passwordValidity.value === null){
         return;
       } else {
@@ -98,6 +98,7 @@ export default {
      * @description Validate form and submit it.
      * 
      * @return Validity Errors or Logged in User
+     * @note UX could be improved here
      */
     const handleFormSubmission = async () => {
       const formUsername = formValidations.validateUsername(username.value)

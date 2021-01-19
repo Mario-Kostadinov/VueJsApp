@@ -206,7 +206,7 @@ export default createStore({
             console.log('is this a response')
             console.log(response)
             if(response.message === 'failed to register'){
-              // push fail              
+              throw new Error('Failed to register')
             } else {
               //success 
               context.commit('authenticateUser', response)
@@ -251,7 +251,26 @@ export default createStore({
             }
   
       })
-    }
+    },
+    async checkUsernameAvailability(context, payload) {
+      // query for logging in
+      console.log('checking username STORE')
+      let api = `/api/username/check`
+      await fetch(api, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      })
+        .then((res) => {
+          var response = JSON.parse(res._bodyText)
+          console.log('is this a response')
+          console.log(response)
+          if(response.exists === true){
+            throw new Error('Username exists')
+          } else {
+            return 'success'
+          }
+      })
+  },
   },
   getters: {
     flashMessage(state) {
