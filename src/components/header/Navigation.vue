@@ -49,6 +49,11 @@ export default {
     
     const store = useStore();
 
+    /**
+     * @function
+     * @name handleLogout
+     * @description Log the user out and destroy session
+     */
     const handleLogout = () => {
       store.dispatch('logout')
     }

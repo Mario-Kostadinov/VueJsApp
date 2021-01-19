@@ -40,9 +40,6 @@ export function makeServer({ environment = "development" } = {}) {
         return schema.courses.all()
       })
       this.get("/courses/:id", (db, request) => {
-        // console.log('server lectrues')
-        // console.log(db.lectures.where({courseId: 1}))
-        // console.log(db.lectures.all())
         return db.courses.find(request.params.id)
       })
       this.get("/courses/:id/lectures", (db, request) => {
@@ -75,11 +72,32 @@ export function makeServer({ environment = "development" } = {}) {
           imageUrl: attrs.courseImageUrl,
           isPublic: attrs.isPublic
         } 
-        server.schema.courses.create(newCourse);
-        
+        server.schema.courses.create(newCourse); 
+      }),
+      this.post("/course/:id/edit", (db, request) => {
+        let attrs = JSON.parse(request.requestBody) 
+        let course_id = request.params.id;
+        console.log('attrs: ',attrs)
+        console.log('Edit course id', request.params)
+        const newCourse = {
+          title: attrs.courseTitle,
+          description: attrs.courseDescription,
+          imageUrl: attrs.courseImageUrl,
+          isPublic: attrs.isPublic
+        } 
+        console.log('finding course...')
+        let findCourseById = db.courses.find(course_id)
+        console.log(findCourseById)
+        console.log(findCourseById.attrs)
+        findCourseById.attrs.title = newCourse.title;
+        findCourseById.attrs.description = newCourse.description;
+        findCourseById.attrs.imageUrl = newCourse.imageUrl;
+        findCourseById.attrs.isPublic = newCourse.isPublic;
+        findCourseById.save()
+        console.log(newCourse)
+        // schema.courses.update(newCourse); 
       }),
       this.post("/courses/:id/lecture", (db, request) => {
-        console.log('------Creating new lecture-------')
         let attrs = JSON.parse(request.requestBody)
         let course_id = request.params.id;
         let findCourseById = db.courses.find(course_id)
@@ -97,11 +115,8 @@ export function makeServer({ environment = "development" } = {}) {
         return lecture
       }),
       this.delete("/courses/:id/lectures/:lectureId/delete", (db, request) => {
-        console.log('------De;eteing lecture lecture-------')
         let lectureId = request.params.lectureId;
-        console.log(lectureId)
         let lecture = db.lectures.findBy({id: lectureId})
-        console.log(lecture.isDeleted)
         lecture.isDeleted = true
         lecture.save();
         return { message: 'success' }

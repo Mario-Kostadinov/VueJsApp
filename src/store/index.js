@@ -44,6 +44,9 @@ export default createStore({
     },
     unmountCourseDetail(state){
       state.courseDetail = null;
+    },
+    removeCourseListing(state){
+      state.courses = null
     }
   },
   actions: {
@@ -62,7 +65,7 @@ export default createStore({
         .then(() => {
           context.commit('logoutUser')
           context.commit('flashMessage', {
-            type: 'success',
+            type: 'warning',
             message: 'Logged out successfully!'
           })
           // courseData.value = response.course;
@@ -103,6 +106,10 @@ export default createStore({
         })
           .then(() => {
             context.dispatch('fetchLectures', payload)
+            context.commit('flashMessage', {
+              type: 'danger',
+              message: 'Lecture removed!'
+            })
         })
     },
     fetchCourses(context) {
@@ -133,6 +140,30 @@ export default createStore({
             context.commit('flashMessage', {
               type: 'success',
               message: 'New course created successfully!'
+            })
+          }
+          // courseData.value = response.course;
+      })
+    },
+    EditCourse(context, payload){
+      console.log('Adding Course')
+      // query for logging in
+      let api = `/api/course/${payload.courseId}/edit`
+      fetch(api, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      })
+        .then((res) => {
+          var response = JSON.parse(res._bodyText)
+          console.log('is this a response')
+          console.log(response)
+          if(response.message === 'failed to register'){
+            // push fail              
+          } else {
+            //success 
+            context.commit('flashMessage', {
+              type: 'success',
+              message: 'Course edited successfully!'
             })
           }
           // courseData.value = response.course;
