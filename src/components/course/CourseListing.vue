@@ -2,7 +2,7 @@
   <div class="course-listing">
     <div class="container">
       <div class="row">
-        <div class="col-4" v-for="course in courses" :key="course.id"> 
+        <div class="col-12 col-md-6 col-lg-4 mb-4" v-for="course in courses" :key="course.id"> 
         <course-item 
           :title="course.title" 
           :id="course.id"
@@ -43,3 +43,10 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+  .course-listing {
+
+  }
+
+</style>

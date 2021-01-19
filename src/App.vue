@@ -1,18 +1,18 @@
 <template>
   <navigation></navigation>
   <router-view/>
-  <main-footer></main-footer>
+  <!-- <main-footer></main-footer> -->
 </template>
 
 
 <script>
 import Navigation from '@/components/header/Navigation.vue';
-import MainFooter from '@/components/footer/MainFooter.vue';
+// import MainFooter from '@/components/footer/MainFooter.vue';
 
 export default {
   components: {
     Navigation,
-    MainFooter
+    
   }
 }
 </script>
@@ -24,6 +24,8 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  height: 100vh;
+  background-color: #f0f0f0;
 }
 
 #nav {
@@ -37,5 +39,6 @@ export default {
       color: #42b983;
     }
   }
+
 }
 </style>
