@@ -45,8 +45,8 @@ export default {
     const usernameError = ref('');
     const usernameValidity = ref(null)
 
-    const password = ref('123456');
-    const passwordConfirm = ref('123456');
+    const password = ref('');
+    const passwordConfirm = ref('');
     const passwordValidity = ref(null)
     const passwordsMatch = ref(false)
     const formValidity = ref(false)
