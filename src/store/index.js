@@ -48,14 +48,26 @@ export default createStore({
     removeCourseListing(state){
       state.courses = null
     },
-    formFailed(state){
-      state.formFailed = true
-    },
-    formSucceeded(state){
-      state.formFailed = false
+    searchAllCourses(state, payload) {
+      if (state.courses === null) {
+        state.courses = null;
+      } else {
+        const filteredCourses = state.courses.filter((course) => {
+          return course.title.toLowerCase().includes(payload.query)
+        })
+        state.courses = filteredCourses
+      }
     }
   },
   actions: {
+    searchAllCourses(context, payload) {
+      console.log(payload.query.length)
+      if(payload.query.length > 0) {
+        context.commit('searchAllCourses', payload)
+      } else {
+        context.dispatch('fetchCourses')
+      }
+    },
     courseDetail(context, payload){
       const api = `/api/courses/${payload.courseId}`;
       fetch(api)
@@ -271,7 +283,7 @@ export default createStore({
             return 'success'
           }
       })
-  },
+    }
   },
   getters: {
     flashMessage(state) {
