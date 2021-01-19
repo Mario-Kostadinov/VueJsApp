@@ -88,6 +88,7 @@ export default createStore({
         })
     },
     fetchLectures(context, payload) {
+        console.log('fethcLEcturees')
         let api = `/api/courses/${payload.courseId}/lectures`;
         fetch(api)
           .then((res) => {
@@ -127,6 +128,25 @@ export default createStore({
           }
           // courseData.value = response.course;
       })
+    },
+    addLecture(context, payload){
+      console.log('----dispatch lecture-----')
+      let api = `/api/courses/${payload.courseId}/lecture`;
+      fetch(api, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      })
+        .then(() => {
+          context.dispatch('courseDetail', {courseId: payload.courseId})
+          context.dispatch('fetchLectures', {courseId: payload.courseId})
+          context.commit('flashMessage', {
+            type: 'success',
+            message: 'New lecture created successfully!'
+          })
+
+          // courseData.value = response.course;
+      })
+      
     },
     async register(context, payload) {
         // query for logging in

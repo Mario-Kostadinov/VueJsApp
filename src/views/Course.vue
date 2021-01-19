@@ -96,7 +96,6 @@ export default {
 
     return {
       courseDetail: computed(() => {
-        console.log('return courseDetail Computed')
         return store.getters.getCourseDetail;
       }),
       currentUser: currentUser,

@@ -10,9 +10,6 @@ import Navigation from '@/components/header/Navigation.vue';
 import MainFooter from '@/components/footer/MainFooter.vue';
 
 export default {
-  mounted() {
-    console.log('mounted')
-  },
   components: {
     Navigation,
     MainFooter

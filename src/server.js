@@ -79,16 +79,21 @@ export function makeServer({ environment = "development" } = {}) {
         
       }),
       this.post("/courses/:id/lecture", (db, request) => {
-    
+        console.log('------Creating new lecture-------')
         let attrs = JSON.parse(request.requestBody)
         let course_id = request.params.id;
-        let user_id = attrs.user_id
         let findCourseById = db.courses.find(course_id)
-        let enrolledUsersSlice = findCourseById.attrs.enrolledUserIds.slice();
-        enrolledUsersSlice.push(user_id)
-        findCourseById.attrs.enrolledUserIds = enrolledUsersSlice;
-        findCourseById.save();   
-        return findCourseById
+        
+        // let user_id = attrs.user_id
+        const payload = {
+          title: attrs.lectureTitle, 
+          video_url: attrs.lectureVideoUrl, 
+          course: findCourseById 
+        }
+        console.log(payload)
+        const lecture = server.schema.lectures.create(payload);
+        console.log(lecture)
+        return lecture
       }),
       this.post("/courses/:id/enroll", (db, request) => {
     
@@ -113,7 +118,7 @@ export function makeServer({ environment = "development" } = {}) {
           enrolledCourses: []
         }
       
-        const user = server.schema.users.create(newUser);
+          const user = server.schema.users.create(newUser);
       
         if (user === null) {
           return {
