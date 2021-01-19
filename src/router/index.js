@@ -6,12 +6,18 @@ import Login from '../views/Login.vue'
 import AddCourse from '../views/AddCourse.vue'
 import EditCourse from '../views/EditCourse.vue'
 import AddLecture from '../views/AddLecture.vue'
+import AllCourses from '../views/AllCourses.vue'
 
 const routes = [
   {
     path: '/',
     name: 'home',
     component: Home
+  },
+  {
+    path: '/courses',
+    name: 'view-all-courses',
+    component: AllCourses
   },
   {
     path: '/testing',

@@ -16,7 +16,7 @@
             </li>
             
             <li v-if="isAdmin" class="nav-item">
-              <router-link :to="{ name: 'course-add' }" class="nav-link">Add Course</router-link> 
+              <router-link :to="{ name: 'view-all-courses' }" class="nav-link">Courses</router-link> 
             </li>
           </ul>
           <div v-if="currentUser === null">
