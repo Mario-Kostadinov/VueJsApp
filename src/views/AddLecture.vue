@@ -1,7 +1,8 @@
 <template>
   <div class="register container">
-  
-    <h2 class="mb-5">{{ courseDetail.title }}</h2>
+    <div v-if="courseDetail !== null">
+      <h2 class="mb-5">{{ courseDetail.title }}</h2>
+    </div>
     <h3>Add Lecture</h3>
     <form @submit.prevent="handleFormSubmission" class="shadow pl-4 pr-4 pt-5 pb-5">
       <div class="form-group">
@@ -52,6 +53,11 @@ export default {
     }
 
     const handleDeleteLecture = lectureId => {
+      const payload = {
+        courseId: 1,
+        lectureId: lectureId
+      }
+      store.dispatch('deleteLecture', payload)
       console.log('Deleting', lectureId)
     }
 

@@ -59,9 +59,7 @@ export default createStore({
       // query for logging in
       let api = `/api/logout`
       fetch(api)
-        .then((res) => {
-          console.log(res)
-          console.log('Logging out')
+        .then(() => {
           context.commit('logoutUser')
           context.commit('flashMessage', {
             type: 'success',
@@ -94,6 +92,17 @@ export default createStore({
           .then((res) => {
             var response = JSON.parse(res._bodyText)
             context.commit('updateLectures', response)
+        })
+    },
+    deleteLecture(context, payload) {
+        console.log('Delete Lecture')
+        let api = `/api/courses/${payload.courseId}/lectures/${payload.lectureId}/delete`;
+        fetch(api, {
+          method: "DELETE",
+          body: JSON.stringify(payload)
+        })
+          .then(() => {
+            context.dispatch('fetchLectures', payload)
         })
     },
     fetchCourses(context) {
