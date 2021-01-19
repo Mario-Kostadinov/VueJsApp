@@ -8,3 +8,6 @@ COPY . .
 
 RUN npm run lint \
   && npm run build
+
+
+# Here we can write an additional command that can deploy the app
