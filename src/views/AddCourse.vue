@@ -35,9 +35,9 @@ export default {
     // const router = useRouter();
     const store = useStore();
 
-    const courseTitle = ref('Angular Js')
-    const courseDescription = ref('Angular Description')
-    const courseImageUrl = ref('https://images.unsplash.com/photo-1610413233393-aa9a3a7f0a2c?ixid=MXwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=60')
+    const courseTitle = ref('')
+    const courseDescription = ref('')
+    const courseImageUrl = ref('')
     const courseIsPublic = ref(false)
 
     const handleFormSubmission = () => {
