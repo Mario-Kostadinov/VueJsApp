@@ -19,7 +19,7 @@
             <router-link :to="{ name: 'login' }" class="mr-3">Login</router-link> 
             <router-link :to="{ name: 'register' }">Register</router-link> 
           </div>
-          <div v-else class="d-flex align-items-center">
+          <div v-else class="d-flex align-items-center justify-content-center">
             <span class="welcome--username">Welcome, {{ currentUser.username }}</span>
             <button class="btn" style="color: #fff" @click="handleLogout">Logout</button> 
           </div>

@@ -1,12 +1,12 @@
 <template>
   <div class="course-detail container shadow-lg">
     <div v-if="courseDetail !== null" class="row">
-      <div class="col-7">
+      <div class="col-12 col-lg-7">
         <h2>{{ courseDetail.title }}</h2>
         <img v-if="courseDetail.imageUrl" :src="courseDetail.imageUrl" class="course-detail__image" style="width: 100%" />
         <img v-else src="https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png" class="course-detail__image" style="width: 100%" />
       </div>
-      <div class="col-5">
+      <div class="col-12 col-lg-5 mt-md-4 mt-lg-0">
         <div>
           <h3>Course Description</h3>
           <p>{{ courseDetail.description }}</p>

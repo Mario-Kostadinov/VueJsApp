@@ -45,8 +45,4 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .course-listing {
-
-  }
-
 </style>
