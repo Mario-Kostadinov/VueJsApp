@@ -47,6 +47,12 @@ export default createStore({
     },
     removeCourseListing(state){
       state.courses = null
+    },
+    formFailed(state){
+      state.formFailed = true
+    },
+    formSucceeded(state){
+      state.formFailed = false
     }
   },
   actions: {
@@ -66,7 +72,7 @@ export default createStore({
           context.commit('logoutUser')
           context.commit('flashMessage', {
             type: 'warning',
-            message: 'Logged out successfully!'
+            message: 'Logged out!'
           })
           // courseData.value = response.course;
       })
@@ -212,9 +218,7 @@ export default createStore({
             // courseData.value = response.course;
         })
     },
-    async login(context, payload) {
-      console.log('Login action hit')
-  
+    async login(context, payload) {  
         // query for logging in
         let api = `/api/login`
         await fetch(api, {
@@ -223,19 +227,29 @@ export default createStore({
         })
           .then((res) => {
             var response = JSON.parse(res._bodyText)
-            console.log('is this a response')
             console.log(response)
             if(response.message === 'failed to authenticate'){
-              // push fail              
-            } else {
-              //success 
-              context.commit('authenticateUser', response)
+              // Authentication Failed           
               context.commit('flashMessage', {
-                type: 'success',
-                message: 'Logged in successfully!'
+                type: 'danger',
+                message: 'Failed to Authenticate!'
               })
+              throw new Error('Failed to Authenticate')
+            } else {
+              if (response.message === 'success') {
+                // Log user in
+                console.log('Success motherfucker')
+  
+                context.commit('authenticateUser', response)
+                context.commit('flashMessage', {
+                  type: 'success',
+                  message: 'Logged in successfully!'
+                })
+              } else {
+                throw new Error('Failed to Authenticate')
+              }
             }
-            // courseData.value = response.course;
+  
       })
     }
   },
@@ -250,14 +264,29 @@ export default createStore({
       return state.courseLectures === null ? null : state.courseLectures
     },
     getCurrentUser(state){
-      console.log(state)
-      return state.user !== null ? state.user : null
+      console.log('get current user')
+      console.log(state.user)
+      if(state.user === undefined) {
+        console.log('it is undefinied')
+        return null
+      }
+      if (state.user !== null || state.user !== undefined) {
+        console.log('CurerntUser exists')
+        typeof(state.user)
+        return state.user
+      } else {
+        return null
+      }
     },
     isAdmin(state){
-      return state.user !== null && state.user.role === 'admin' ? true : false;
+      if (state.user) {
+        return state.user.role === 'admin' ? true : false;
+      } else {
+        return false
+      }
     },
     getAllCourses(state) {
       return state.courses !== null ? state.courses : null;
-    }
+    },
   }
 })

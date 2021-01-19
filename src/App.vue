@@ -45,6 +45,12 @@ form {
     background: #fff;
     max-width: 480px;
     margin: auto;
+    border-radius: 10px;
+
+    button {
+      width: 100%;
+      margin-top: 20px;
+    }
 }
 
 </style>

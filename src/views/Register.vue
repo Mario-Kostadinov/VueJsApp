@@ -1,5 +1,6 @@
 <template>
   <div class="register container">
+    <h2 class="mb-4">Register</h2>
     <form @submit.prevent="handleFormSubmission" class="shadow pl-4 pr-4 pt-5 pb-5">
       <div class="form-group">
         <label for="exampleInputEmail1">Email address</label>
@@ -14,6 +15,9 @@
         <input v-model="form.passwordConfirm.value" type="password" class="form-control" id="exampleInputPassword2" placeholder="Password">
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
+      <p class="mt-4 mb-0">Already have an account?             
+        <router-link :to="{ name: 'login' }">Login</router-link> instead!
+      </p>
     </form>
   </div>
 </template>
@@ -36,6 +40,18 @@ export default {
     const password = ref('123456');
     const passwordConfirm = ref('123456');
 
+    /**
+     * @function
+     * @name handleUsernameCheck
+     * @description Check if username exists in DB
+     * 
+     * @return true or false
+    */
+
+    const handleUsernameCheck = () => {
+      console.log('Checking Username')
+    }
+
     const handleFormSubmission = async () => {
        
       const payload = {
@@ -56,6 +72,7 @@ export default {
 
     return {
       handleFormSubmission: handleFormSubmission,
+      handleUsernameCheck: handleUsernameCheck,
       form: {
         email: email,
         password: password,

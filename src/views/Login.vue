@@ -1,22 +1,27 @@
 <template>
   <div class="register container">
+    <h2 class="mb-4">Login</h2>
     <form @submit.prevent="handleFormSubmission" class="shadow pl-4 pr-4 pt-5 pb-5">
       <div class="form-group">
-        <label for="exampleInputEmail1">Username</label>
-        <input class="form-control" :class="[emailValidityClass]" v-model.trim="form.email.value" type="text" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+        <label for="username">Username</label>
+        <input class="form-control" :class="[usernameValidityClass]" @change="handleUsernameCheck" v-model.trim="form.username.value" type="text" id="username" aria-describedby="emailHelp" placeholder="Username">
         <div class="invalid-feedback">
-          <p>{{ emailError }}</p>
+          <p>{{ usernameError }}</p>
         </div>
       </div>
       <div class="form-group">
-        <label for="exampleInputPassword1">Password</label>
-        <input v-model.trim="form.password.value" type="password" :class="[passwordValidityClass]" class="form-control" id="exampleInputPassword1" placeholder="Password">
+        <label for="pasword">Password</label>
+        <input v-model.trim="form.password.value" type="password" :class="[passwordValidityClass]" class="form-control" id="pasword" placeholder="Password">
         <div class="invalid-feedback">
           <p>{{ passwordError }}</p>
         </div>
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
+      <p class="mt-4 mb-0">Don't have an account?           
+        <router-link :to="{ name: 'register' }">Sign up</router-link>!
+      </p>
     </form>
+
   </div>
 </template>
 
@@ -25,6 +30,8 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
+
+// Utility functions for validating inputs
 import formValidations from '../utils/formValidations.js';
 
 export default {
@@ -33,22 +40,50 @@ export default {
     const router = useRouter();
     const store = useStore();
 
-    const email = ref('admin');
-    const emailError = ref('');
-    const password = ref('ewqqweqwewq');
+    const username = ref('admin');
+    const usernameError = ref('');
+
+    const password = ref('asdasdsadasdads');
     const passwordError = ref('');
 
-    const emailValidity = ref(null)
+    const usernameValidity = ref(null)
     const passwordValidity = ref(null)
 
-    let emailValidityClass = computed(() => {
-      if (emailValidity.value === null){
+    /**
+     * @function
+     * @name invalidateForm
+     * @description On failed authentication show errors
+     * 
+     */
+    const invalidateForm = () => {
+      username.value = '';
+      password.value = '';
+      usernameValidity.value = false;
+      passwordValidity.value = false;
+    }
+
+    /**
+     * @function
+     * @name usernameValidityClass
+     * @description Based on username validity ref return css class
+     * 
+     * @return CSS class for validity
+     */
+    let usernameValidityClass = computed(() => {
+      if (usernameValidity.value === null){
         return;
       } else {
-        return emailValidity.value == true ? 'is-valid' : 'is-invalid';
+        return usernameValidity.value == true ? 'is-valid' : 'is-invalid';
       }
     })
 
+    /**
+     * @function
+     * @name passwordValidityClass
+     * @description Based on password validity ref return css class
+     * 
+     * @return CSS class for validity
+     */
     let passwordValidityClass = computed(() => {
       if (passwordValidity.value === null){
         return;
@@ -57,13 +92,20 @@ export default {
       }
     })
 
+    /**
+     * @function
+     * @name handleFormSubmission
+     * @description Validate form and submit it.
+     * 
+     * @return Validity Errors or Logged in User
+     */
     const handleFormSubmission = async () => {
-      const formEmail = formValidations.validateEmail(email.value)
-      if(!formEmail.valid){
-        emailValidity.value = false;
-        emailError.value = formEmail.error;
+      const formUsername = formValidations.validateUsername(username.value)
+      if(!formUsername.valid){
+        usernameValidity.value = false;
+        usernameError.value = formUsername.error;
       } else {
-        emailValidity.value = true;
+        usernameValidity.value = true;
       }
 
       const formPassword = formValidations.validatePassword(password.value)
@@ -75,27 +117,32 @@ export default {
         passwordValidity.value = true;
       }
 
-      // if(formEmail.valid && formPassword.valid) {   
+      if(formUsername.valid && formPassword.valid) {   
         const payload = {
-          username: email.value,
+          username: username.value,
           password: password.value
         }
-        await store.dispatch('login', payload)
-
-        router.push({
-          name: 'home'
-        })
+        try {
+          await store.dispatch('login', payload);
+          router.push({
+            name: 'home'
+          })
+        } catch(e) {
+          console.log(e)
+          invalidateForm()
+        }
+      }
 
     }
 
     return {
       handleFormSubmission: handleFormSubmission,
-      emailValidityClass: emailValidityClass,
+      usernameValidityClass: usernameValidityClass,
       passwordValidityClass: passwordValidityClass,
-      emailError: emailError,
+      usernameError: usernameError,
       passwordError: passwordError,
       form: {
-        email: email,
+        username: username,
         password: password
       }
     }

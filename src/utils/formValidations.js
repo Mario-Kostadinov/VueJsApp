@@ -1,5 +1,14 @@
 import { isEmail } from 'validator';
 
+const validateUsername = username => {
+  if (!username.length) {
+    return { valid: false, error: 'Username is required.'}
+  }
+
+  return {
+     valid: true, error: null 
+  }
+}
 const validateEmail = email => {
   if (!email.length) {
     return { valid: false, error: 'Email is required.'}
@@ -31,5 +40,6 @@ const validatePassword = password => {
 
 export default {
   validateEmail,
-  validatePassword
+  validatePassword,
+  validateUsername
 }
