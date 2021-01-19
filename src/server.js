@@ -1,5 +1,8 @@
 import { createServer, Model, belongsTo, hasMany, Serializer } from "miragejs"
 
+    /** miragejs is a API mocking library used for development only
+     *  Can be found here. https://miragejs.com/
+     */
 export function makeServer({ environment = "development" } = {}) {
   let server = createServer({
     environment,
@@ -19,6 +22,11 @@ export function makeServer({ environment = "development" } = {}) {
         include: ['owner', 'enrolledUsers']
       })
     },
+    /**
+     * @function
+     * @name seeds
+     * @description creates the dummy data used for testing
+     */
     seeds(server) {
       let admin = server.create("user", { username: "admin", role: 'admin', password: 'adminadmin', enrolledCourses: [] })
       let bob = server.create("user", { username: "Bob", role: "user", password: 'bobbob', enrolledCourses: [] })
@@ -29,10 +37,38 @@ export function makeServer({ environment = "development" } = {}) {
       server.create('lecture', { title: "Lecture 2: Vue Basics", video_url: '4UZrsTqkcW4', course: project_one, isDeleted: false })
       // server.create("course", {owner: 'user'})
     },
-
+    /**
+     * @function
+     * @name routes
+     * @description specifies the REST routes used in testing
+     * 
+     * @name  GET/users 
+     * @description Get all users
+     * @name  GET/courses 
+     * @description Get all courses
+     * @name  GET/courses/:id 
+     * @description Get a course with an id
+     * @name  GET/courses/:id/lectures
+     * @description Get all lectures for that course 
+     * @name  POST/login 
+     * @description Log user in
+     * @name  POST/logout 
+     * @description Log out user
+     * @name  POST/course 
+     * @description Create a course
+     * @name  POST/course/:id/edit
+     * @description Edit Course 
+     * @name  POST/courses/:id/lecture
+     * @description Creates a lecture
+     * @name  POST/courses/:id/lectures/:lectureId/delete 
+     * @description Deletes a lecture
+     * @name  POST/courses/:id/enroll 
+     * @description Enroll user to a course
+     * @name  POST/username/check 
+     * @description Checkes if username is taken
+     */
     routes() {
       this.namespace = "api"
-
       this.get("/users", (schema) => {
         return schema.users.all()
       })
@@ -45,7 +81,6 @@ export function makeServer({ environment = "development" } = {}) {
       this.get("/courses/:id/lectures", (db, request) => {
         return db.lectures.where({courseId: request.params.id, isDeleted: false})
       })
-
       this.post("/login", (db, request) => {
         let attrs = JSON.parse(request.requestBody)
         const user = db.users.findBy({username: attrs.username})
@@ -68,7 +103,6 @@ export function makeServer({ environment = "development" } = {}) {
           }
         }
       })
-
       this.get("/logout", () => {
         return {message: 'success'}
       }),
@@ -85,25 +119,19 @@ export function makeServer({ environment = "development" } = {}) {
       this.post("/course/:id/edit", (db, request) => {
         let attrs = JSON.parse(request.requestBody) 
         let course_id = request.params.id;
-        console.log('attrs: ',attrs)
-        console.log('Edit course id', request.params)
         const newCourse = {
           title: attrs.courseTitle,
           description: attrs.courseDescription,
           imageUrl: attrs.courseImageUrl,
           isPublic: attrs.courseIsPublic
         } 
-        console.log('finding course...')
         let findCourseById = db.courses.find(course_id)
-        console.log(findCourseById)
-        console.log(findCourseById.attrs)
         findCourseById.attrs.title = newCourse.title;
         findCourseById.attrs.description = newCourse.description;
         findCourseById.attrs.imageUrl = newCourse.imageUrl;
         findCourseById.attrs.isPublic = newCourse.isPublic;
         findCourseById.save()
         console.log(newCourse)
-        // schema.courses.update(newCourse); 
       }),
       this.post("/courses/:id/lecture", (db, request) => {
         let attrs = JSON.parse(request.requestBody)
@@ -115,9 +143,7 @@ export function makeServer({ environment = "development" } = {}) {
           course: findCourseById,
           isDeleted: false
         }
-        console.log(payload)
         const lecture = server.schema.lectures.create(payload);
-        console.log(lecture)
         return lecture
       }),
       this.delete("/courses/:id/lectures/:lectureId/delete", (db, request) => {
@@ -128,7 +154,6 @@ export function makeServer({ environment = "development" } = {}) {
         return { message: 'success' }
       }),
       this.post("/courses/:id/enroll", (db, request) => {
-    
         let attrs = JSON.parse(request.requestBody)
         let course_id = request.params.id;
         let user_id = attrs.user_id
@@ -140,7 +165,6 @@ export function makeServer({ environment = "development" } = {}) {
         return findCourseById
       }),
       this.post("/register", (schema, request) => {
-        console.log('-----registers-----')
         let attrs = JSON.parse(request.requestBody)
         console.log(attrs)
         const newUser = {
@@ -149,9 +173,7 @@ export function makeServer({ environment = "development" } = {}) {
           role: 'user',
           enrolledCourses: []
         }
-      
-          const user = server.schema.users.create(newUser);
-      
+        const user = server.schema.users.create(newUser);
         if (user === null) {
           return {
             message: 'failed to register'
@@ -164,11 +186,8 @@ export function makeServer({ environment = "development" } = {}) {
         }
       }),
       this.post("/username/check", (db, request) => {
-        console.log('-----Checking username-----')
-        let attrs = JSON.parse(request.requestBody)    
-        console.log(attrs)  
+        let attrs = JSON.parse(request.requestBody)     
         const user = db.users.findBy({username: attrs.username})
-        console.log(user)
         if (user === null) {
           return {
             exists: false
