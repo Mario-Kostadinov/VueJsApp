@@ -39,6 +39,12 @@ export default {
       color: #42b983;
     }
   }
-
 }
+
+form {
+    background: #fff;
+    max-width: 480px;
+    margin: auto;
+}
+
 </style>
