@@ -47,13 +47,8 @@ export function makeServer({ environment = "development" } = {}) {
       })
 
       this.post("/login", (db, request) => {
-        console.log('------Login------')
         let attrs = JSON.parse(request.requestBody)
         const user = db.users.findBy({username: attrs.username})
-        console.log(attrs)
-        console.log(typeof(user))
-        console.log(user.attrs.username)
-        console.log('------Login------')
         if (user === null) {
           console.log('first if')
           return {
@@ -67,7 +62,6 @@ export function makeServer({ environment = "development" } = {}) {
               user: user.attrs 
             }
           } else {
-            console.log('else matches')
               return {
               message: 'failed to authenticate'
             } 
