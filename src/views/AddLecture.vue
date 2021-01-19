@@ -10,7 +10,7 @@
         <input class="form-control" v-model="lectureTitle" type="text" id="lecture_title" placeholder="Course title">
       </div>
       <div class="form-group">
-        <label for="lecture_video_url">Youtube Video Id</label>
+        <label for="lecture_video_url">Youtube Video ID</label>
         <input v-model.trim="lectureVideoUrl" type="text" class="form-control" id="lecture_video_url" placeholder="Course description">
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
@@ -38,8 +38,8 @@ export default {
 
     const store = useStore();
 
-    const lectureTitle = ref('Angular Jss')
-    const lectureVideoUrl = ref('Angular Description')
+    const lectureTitle = ref('')
+    const lectureVideoUrl = ref('')
 
     const handleFormSubmission = () => {
      
