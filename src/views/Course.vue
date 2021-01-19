@@ -38,7 +38,7 @@
             <h4>
             {{ lecture.title }}
             </h4>
-            <button class="btn btn-primary">PLAY</button>
+            <button @click="handleShowModal(lecture)" class="btn btn-primary">PLAY</button>
           </div>
         </div>
         <div v-else>
@@ -49,11 +49,36 @@
         <p> To get full access to the course you need to enroll first.</p>
       </div>
     </div>
+ 
+    <div id="modal-template">
+      <transition name="modal">
+        <div class="modal-mask" :class="showModal == true ? '' : 'd-none'" >
+          <div class="modal-wrapper">
+            <div class="modal-container">
+              <div class="modal-body">
+                <slot name="body">
+                  <h2 class="mb-5">{{ lectureTitle }}</h2>
+                  <iframe width="560" height="315" :src="lectureVideoUrl" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                </slot>
+              </div>
+              <div class="modal-footer">
+                <slot name="footer">
+                  <button class="btn btn-primary" @click="showModal = false">
+                    Close
+                  </button>
+                </slot>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
+    </div>
+
   </div>
 </template>
 
 <script>
-import { computed ,onMounted, onUnmounted } from 'vue'
+import { ref, computed ,onMounted, onUnmounted } from 'vue'
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 
@@ -62,9 +87,19 @@ export default {
   setup(props){
     const store = useStore();
     const router = useRouter();
-
+    const showModal = ref(false)
     const currentUser = computed(() => store.getters.getCurrentUser);
     
+    const lectureTitle = ref('');
+    const lectureVideoUrl = ref('');
+
+    const handleShowModal = lecture => {
+      showModal.value = true
+      lectureTitle.value = lecture.title
+      lectureVideoUrl.value = lecture.video_url
+      console.log(lecture)
+    }
+
     const handleEnrollButton = () => {
       const user_id = currentUser.value.id;
       const courseId = props.id;
@@ -111,8 +146,12 @@ export default {
         return store.getters.getCourseDetail;
       }),
       currentUser: currentUser,
+      showModal: showModal,
+      lectureTitle: lectureTitle,
+      lectureVideoUrl: lectureVideoUrl,
       handleEnrollButton: handleEnrollButton,
       isUserEnrolled: isUserEnrolled,
+      handleShowModal: handleShowModal,
       isAdmin: computed(() => store.getters.isAdmin),
       handleEditButton: handleEditButton,
       courseLectures: computed(() => {
@@ -135,7 +174,7 @@ export default {
     }
 
     .course-lectures {
-      max-width: 500px;
+      max-width: 600px;
       margin: 0 auto;
       border-bottom: 1px solid black;
       padding-bottom: 10px;
@@ -154,4 +193,64 @@ export default {
       }
     }
   }
+  .modal-mask {
+  position: fixed;
+  z-index: 9998;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: table;
+  transition: opacity 0.3s ease;
+}
+
+.modal-wrapper {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.modal-container {
+  max-width: 740px;
+  margin: 0px auto;
+  padding: 20px 30px;
+  background-color: #fff;
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+  transition: all 0.3s ease;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.modal-header h3 {
+  margin-top: 0;
+  color: #42b983;
+}
+
+.modal-body {
+  margin: 20px 0;
+}
+
+.modal-default-button {
+  float: right;
+}
+
+/*
+ * The following styles are auto-applied to elements with
+ * transition="modal" when their visibility is toggled
+ * by Vue.js.
+ *
+ * You can easily play with the modal transition by editing
+ * these styles.
+ */
+
+.modal-enter-from, .modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-active .modal-container,
+.modal-leave-active .modal-container {
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
 </style>
