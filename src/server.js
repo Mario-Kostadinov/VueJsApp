@@ -91,7 +91,7 @@ export function makeServer({ environment = "development" } = {}) {
           title: attrs.courseTitle,
           description: attrs.courseDescription,
           imageUrl: attrs.courseImageUrl,
-          isPublic: attrs.isPublic
+          isPublic: attrs.courseIsPublic
         } 
         console.log('finding course...')
         let findCourseById = db.courses.find(course_id)
@@ -109,8 +109,6 @@ export function makeServer({ environment = "development" } = {}) {
         let attrs = JSON.parse(request.requestBody)
         let course_id = request.params.id;
         let findCourseById = db.courses.find(course_id)
-        
-        // let user_id = attrs.user_id
         const payload = {
           title: attrs.lectureTitle, 
           video_url: attrs.lectureVideoUrl, 

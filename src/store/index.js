@@ -154,6 +154,7 @@ export default createStore({
     EditCourse(context, payload){
       console.log('Adding Course')
       // query for logging in
+      console.log(payload)
       let api = `/api/course/${payload.courseId}/edit`
       fetch(api, {
         method: "POST",
@@ -305,7 +306,22 @@ export default createStore({
       }
     },
     getAllCourses(state) {
-      return state.courses !== null ? state.courses : null;
+      if (state.courses === null) {
+        return null;
+      } else {
+        const filteredCourses = state.courses.filter((course) => {
+          return course.isPublic === true;
+        })
+        console.log(filteredCourses)
+        return filteredCourses
+      }
     },
+    getAllCoursesUnfiltered(state) {
+      if (state.courses === null) {
+        return null;
+      } else {
+        return state.courses
+      }
+    }
   }
 })

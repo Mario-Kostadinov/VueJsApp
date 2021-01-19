@@ -1,9 +1,9 @@
 <template>
-  <div class="register container">
+  <div class="add-lectures container">
     <div v-if="courseDetail !== null">
-      <h2 class="mb-5">{{ courseDetail.title }}</h2>
+      <h2 class="mb-5">Course: {{ courseDetail.title }}</h2>
     </div>
-    <h3>Add Lecture</h3>
+    <h3 class="mb-4">Add Lecture</h3>
     <form @submit.prevent="handleFormSubmission" class="shadow pl-4 pr-4 pt-5 pb-5">
       <div class="form-group">
         <label for="lecture_title">Lecture Title</label>
@@ -16,10 +16,10 @@
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
     <div class="course-lectures mt-5">
-      <h3>There are {{ courseLectures.length }} in this course</h3>
+      <h3 class="mb-3">There are {{ courseLectures.length }} in this course</h3>
       <div v-for="lecture in courseLectures" :key="lecture.id">
-        <div class="d-flex justify-content-between align-items-center pb-3 pt-3 p-2 mb-3" style="border: 1px solid black; border-radius: 5px">
-        <p>{{ lecture.title }}</p>
+        <div class="d-flex justify-content-between align-items-center p-3 mb-3" style="border: 1px solid black; border-radius: 5px">
+        <p class="lecture-title">{{ lecture.title }}</p>
         <button class="btn btn-danger" @click="handleDeleteLecture(lecture.id)">Delete</button>
         </div>
       </div>
@@ -85,5 +85,19 @@ export default {
 <style scoped lang="scss">
   p {
     margin-bottom: 0 !important;
+  }
+  .add-lectures {
+    background: #fff;
+    padding: 40px 50px;
+    border-radius: 10px;
+
+    .course-lectures {
+      max-width: 600px;
+      margin: auto;
+      .lecture-title {
+        font-weight: 600;
+      }
+    }
+
   }
 </style>

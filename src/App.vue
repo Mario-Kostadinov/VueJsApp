@@ -1,13 +1,11 @@
 <template>
   <navigation></navigation>
   <router-view/>
-  <!-- <main-footer></main-footer> -->
 </template>
 
 
 <script>
 import Navigation from '@/components/header/Navigation.vue';
-// import MainFooter from '@/components/footer/MainFooter.vue';
 
 export default {
   components: {

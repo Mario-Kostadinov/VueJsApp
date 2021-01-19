@@ -26,13 +26,13 @@
 <script>
 
 import { ref } from 'vue';
-// import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
 export default {
   setup() {
 
-    // const router = useRouter();
+    const router = useRouter();
     const store = useStore();
 
     const courseTitle = ref('')
@@ -54,9 +54,9 @@ export default {
 
       store.dispatch('addCourse', payload)
 
-      // router.push({
-      //   name: 'home'
-      // })
+      router.push({
+        name: 'view-all-courses'
+      })
 
     }
 
