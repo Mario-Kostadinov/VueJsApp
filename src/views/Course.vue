@@ -96,7 +96,7 @@ export default {
     const handleShowModal = lecture => {
       showModal.value = true
       lectureTitle.value = lecture.title
-      lectureVideoUrl.value = lecture.video_url
+      lectureVideoUrl.value = `https://www.youtube.com/embed/${lecture.video_url}`
       console.log(lecture)
     }
 
@@ -140,7 +140,6 @@ export default {
       store.commit('unmountCourseDetail')
     })
     
-
     return {
       courseDetail: computed(() => {
         return store.getters.getCourseDetail;
