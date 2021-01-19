@@ -28,7 +28,7 @@
       </div>
     </div>
     <div v-else>
-      Loading...
+      <img src="/spinner.gif" style="width: 300px;" />
     </div>
     <div class="mt-5">
       <div v-if="isUserEnrolled !== null">

@@ -12,34 +12,31 @@ export default createStore({
     }
   },
   mutations: {
-    increment(state) {
-      state.counter = state.counter + 1;
-    },
-    increase(state, payload) {
-      state.counter = state.counter + payload.value
-    },
     fetchCourseData(state, payload) {
       state.courseData = payload.value;
     },
     authenticateUser(state, payload){
+      // In Production this will be replaced by JWT
+      localStorage.setItem('token', payload.user.id)
       state.user = payload.user
     },
     logoutUser(state){
       state.user = null
+      localStorage.removeItem('token')
     },
     flashMessage(state, payload){
       state.flashMessage = payload
+    },
+    removeFlashMessage(state){
+      state.flashMessage = null
     },
     updateCourseDetail(state, payload){
       state.courseDetail = payload.course
     },
     updateLectures(state, payload){
-      console.log(payload.lectures)
       state.courseLectures = payload.lectures
     },
     updateCourses(state, payload){
-      console.log('Mutations')
-      console.log(payload.courses)
       state.courses = payload.courses
     },
     unmountCourseDetail(state){
@@ -60,20 +57,51 @@ export default createStore({
     }
   },
   actions: {
+    /**
+     * @function
+     * @name searchAllCourses
+     * @description Used to search courses and updates the state
+     * 
+     */
     searchAllCourses(context, payload) {
-      console.log(payload.query.length)
       if(payload.query.length > 0) {
         context.commit('searchAllCourses', payload)
       } else {
         context.dispatch('fetchCourses')
       }
     },
+     /**
+     * @function
+     * @name courseDetail
+     * @description Update courseDetail state
+     * 
+     */   
     courseDetail(context, payload){
       const api = `/api/courses/${payload.courseId}`;
       fetch(api)
         .then((res) => {
           var response = JSON.parse(res._bodyText)
           context.commit('updateCourseDetail', response)
+      })
+    },
+    /**
+     * @function
+     * @name setUser
+     * @description Auto log in user if token is present
+     * 
+     */  
+    setUser(context, payload) {
+      console.log(payload.token)
+      let api = `/api/users/${payload.token}`
+      fetch(api, {
+        method: "POST",
+        body: JSON.stringify({id: payload.token})
+      })
+        .then((res) => {
+          var response = JSON.parse(res._bodyText)  
+          if(response.user !== null){
+            context.commit('authenticateUser', response)
+          }
       })
     },
     logout(context) {
@@ -107,7 +135,6 @@ export default createStore({
         })
     },
     fetchLectures(context, payload) {
-        console.log('fethcLEcturees')
         let api = `/api/courses/${payload.courseId}/lectures`;
         fetch(api)
           .then((res) => {
@@ -116,7 +143,6 @@ export default createStore({
         })
     },
     deleteLecture(context, payload) {
-        console.log('Delete Lecture')
         let api = `/api/courses/${payload.courseId}/lectures/${payload.lectureId}/delete`;
         fetch(api, {
           method: "DELETE",
@@ -139,53 +165,30 @@ export default createStore({
         })
     },
     addCourse(context, payload){
-      console.log('Adding Course')
-      // query for logging in
       let api = `/api/course`
       fetch(api, {
         method: "POST",
         body: JSON.stringify(payload)
       })
-        .then((res) => {
-          var response = JSON.parse(res._bodyText)
-          console.log('is this a response')
-          console.log(response)
-          if(response.message === 'failed to register'){
-            // push fail              
-          } else {
-            //success 
-            context.dispatch('fetchCourses')
-            context.commit('flashMessage', {
-              type: 'success',
-              message: 'New course created successfully!'
-            })
-          }
-          // courseData.value = response.course;
+      .then(() => {
+        context.dispatch('fetchCourses')
+        context.commit('flashMessage', {
+          type: 'success',
+          message: 'New course created successfully!'
+        })
       })
     },
     EditCourse(context, payload){
-      console.log('Adding Course')
-      // query for logging in
-      console.log(payload)
       let api = `/api/course/${payload.courseId}/edit`
       fetch(api, {
         method: "POST",
         body: JSON.stringify(payload)
       })
-        .then((res) => {
-          var response = JSON.parse(res._bodyText)
-          console.log('is this a response')
-          console.log(response)
-          if(response.message === 'failed to register'){
-            // push fail              
-          } else {
-            //success 
-            context.commit('flashMessage', {
-              type: 'success',
-              message: 'Course edited successfully!'
-            })
-          }
-          // courseData.value = response.course;
+        .then(() => {
+          context.commit('flashMessage', {
+            type: 'success',
+            message: 'Course edited successfully!'
+          })
       })
     },
     addLecture(context, payload){
@@ -206,6 +209,13 @@ export default createStore({
           // courseData.value = response.course;
       })
       
+    },
+    tryLogin(context) {
+      const token = localStorage.getItem('token')
+      if(token){
+        console.log('we have a token ')
+        context.dispatch('setUser', {token: token})
+      }
     },
     async register(context, payload) {
         // query for logging in
@@ -228,11 +238,9 @@ export default createStore({
                 message: 'Register successfully!'
               })
             }
-            // courseData.value = response.course;
         })
     },
     async login(context, payload) {  
-        // query for logging in
         let api = `/api/login`
         await fetch(api, {
           method: "POST",
@@ -250,9 +258,7 @@ export default createStore({
               throw new Error('Failed to Authenticate')
             } else {
               if (response.message === 'success') {
-                // Log user in
-                console.log('Success motherfucker')
-  
+                // Log user in 
                 context.commit('authenticateUser', response)
                 context.commit('flashMessage', {
                   type: 'success',
@@ -267,7 +273,6 @@ export default createStore({
     },
     async checkUsernameAvailability(context, payload) {
       // query for logging in
-      console.log('checking username STORE')
       let api = `/api/username/check`
       await fetch(api, {
         method: "POST",
@@ -275,8 +280,6 @@ export default createStore({
       })
         .then((res) => {
           var response = JSON.parse(res._bodyText)
-          console.log('is this a response')
-          console.log(response)
           if(response.exists === true){
             throw new Error('Username exists')
           } else {
@@ -295,21 +298,29 @@ export default createStore({
     getCourseLectures(state) {
       return state.courseLectures === null ? null : state.courseLectures
     },
+    /**
+     * @function
+     * @name getCurrentUser
+     * @return Null if no user or entire user object
+     */
     getCurrentUser(state){
-      console.log('get current user')
-      console.log(state.user)
       if(state.user === undefined) {
-        console.log('it is undefinied')
         return null
       }
       if (state.user !== null || state.user !== undefined) {
-        console.log('CurerntUser exists')
         typeof(state.user)
         return state.user
       } else {
         return null
       }
     },
+      /**
+     * @function
+     * @name isAdmin
+     * @description Determines whether currentUser is admin
+     * 
+     * @return true or false
+     */
     isAdmin(state){
       if (state.user) {
         return state.user.role === 'admin' ? true : false;
@@ -317,6 +328,12 @@ export default createStore({
         return false
       }
     },
+    /**
+     * @function
+     * @name getAllCourses
+     * @return Only public courses
+     * 
+     */
     getAllCourses(state) {
       if (state.courses === null) {
         return null;
@@ -324,10 +341,15 @@ export default createStore({
         const filteredCourses = state.courses.filter((course) => {
           return course.isPublic === true;
         })
-        console.log(filteredCourses)
         return filteredCourses
       }
     },
+    /**
+     * @function
+     * @name getAllCoursesUnfiltered
+     * @return All courses for the Admin
+     * 
+     */
     getAllCoursesUnfiltered(state) {
       if (state.courses === null) {
         return null;

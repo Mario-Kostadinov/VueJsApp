@@ -72,6 +72,11 @@ export function makeServer({ environment = "development" } = {}) {
       this.get("/users", (schema) => {
         return schema.users.all()
       })
+      this.post("/users/:id", (schema, request) => {
+        console.log('------')
+        console.log(request.params.id)
+        return schema.users.findBy({id: request.params.id})
+      })
       this.get("/courses", (schema) => {
         return schema.courses.all()
       })

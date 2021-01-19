@@ -6,11 +6,17 @@
 
 <script>
 import Navigation from '@/components/header/Navigation.vue';
+import { useStore } from 'vuex'
 
 export default {
+  setup(){
+    console.log('hello world')
+    const store = useStore();
+    store.dispatch('tryLogin')
+  },
   components: {
     Navigation,
-    
+  
   }
 }
 </script>

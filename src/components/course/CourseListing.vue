@@ -33,7 +33,6 @@ export default {
 
     return {
       courses: computed(() => {
-        console.log('Computed in all courses')
         return store.getters.getAllCourses
       })
     }
@@ -44,5 +43,3 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-</style>

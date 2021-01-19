@@ -16,8 +16,8 @@
           <input v-model="courseDetail.imageUrl" type="text" class="form-control" id="image_url" placeholder="Course image url">
         </div>
         <div class="form-check mb-3">
-          <input type="checkbox" class="form-check-input" v-model="courseDetail.isPublic" @change="handleCheckbox" id="is_public">
-          <label class="form-check-label" for="is_public">Public {{ courseDetail.isPublic }}</label>
+          <input type="checkbox" class="form-check-input" v-model="courseDetail.isPublic" id="is_public">
+          <label class="form-check-label" for="is_public">Public</label>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
@@ -28,7 +28,6 @@
 
 
 <script>
-
 import {  computed , onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
@@ -75,16 +74,10 @@ export default {
       }
     })
 
-    const handleCheckbox = () => {
-      console.log('handaling')
-      console.log(courseDetail.value.isPublic)
-    }
-
     /**
      * @function handleFormSubmission
      * @description Collects the data from the inputs and submits the it
      */
-
     const handleFormSubmission = () => {
      
       const payload = {
@@ -94,10 +87,6 @@ export default {
         courseIsPublic: courseIsPublic.value,
         courseId: props.id
       }
-
-      console.log('------------Add course form-----------')
-      console.log(payload)
-      console.log('Add course form')
 
       store.dispatch('EditCourse', payload)
 
@@ -114,13 +103,11 @@ export default {
       store.commit('unmountCourseDetail')
     })
     
-
     return {
       courseTitle: courseTitle,
       courseDescription: courseDescription,
       courseImageUrl: courseImageUrl,
       courseIsPublic: courseIsPublic,
-      handleCheckbox: handleCheckbox,
       handleFormSubmission: handleFormSubmission,
       courseDetail: courseDetail
 

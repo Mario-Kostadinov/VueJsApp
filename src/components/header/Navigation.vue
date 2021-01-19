@@ -26,9 +26,9 @@
         </div>
       </div>
     </nav>
-    <div v-if="flashMessage.message" :class="'alert-'+flashMessage.type" class="alert alert-dismissible fade show" role="alert">
+    <div v-if="flashMessage !== null" :class="'alert-'+flashMessage.type" class="alert alert-dismissible fade show" role="alert">
       {{ flashMessage.message }}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <button type="button" @click="removeFlashMessage" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
     </div>
@@ -45,19 +45,19 @@ export default {
     
     const store = useStore();
 
-    /**
-     * @function
-     * @name handleLogout
-     * @description Log the user out and destroy session
-     */
     const handleLogout = () => {
       store.dispatch('logout')
     }
+
+    const removeFlashMessage = () => {
+        store.commit('removeFlashMessage')
+      }
 
     return {
       currentUser: computed(() => store.getters.getCurrentUser),
       flashMessage: computed(() => store.getters.flashMessage),
       isAdmin: computed(() => store.getters.isAdmin),
+      removeFlashMessage: removeFlashMessage,
       handleLogout: handleLogout
     }
   }

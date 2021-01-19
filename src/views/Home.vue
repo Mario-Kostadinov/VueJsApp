@@ -28,9 +28,7 @@ export default {
       const payload = {
         query: searchQuery.value.toLowerCase()
       }
-      console.log(payload)
       store.dispatch('searchAllCourses', payload)
-      
     }
 
     onUnmounted(() => {
