@@ -129,7 +129,6 @@ export default {
             name: 'home'
           })
         } catch(e) {
-          console.log(e)
           invalidateForm()
         }
       }

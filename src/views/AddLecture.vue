@@ -48,17 +48,17 @@ export default {
         lectureVideoUrl: lectureVideoUrl.value,
         courseId: props.id
       }
-
       store.dispatch('addLecture', payload)
+      lectureTitle.value = '';
+      lectureVideoUrl.value = '';
     }
 
     const handleDeleteLecture = lectureId => {
       const payload = {
-        courseId: 1,
+        courseId: props.id,
         lectureId: lectureId
       }
       store.dispatch('deleteLecture', payload)
-      console.log('Deleting', lectureId)
     }
 
     onMounted(() => {

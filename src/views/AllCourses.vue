@@ -37,7 +37,6 @@ export default {
 
     return {
       courses: computed(() => {
-        console.log('Computed in all courses')
         return store.getters.getAllCoursesUnfiltered
       })
     }

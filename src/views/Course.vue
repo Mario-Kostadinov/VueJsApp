@@ -97,7 +97,6 @@ export default {
       showModal.value = true
       lectureTitle.value = lecture.title
       lectureVideoUrl.value = `https://www.youtube.com/embed/${lecture.video_url}`
-      console.log(lecture)
     }
 
     const handleEnrollButton = () => {

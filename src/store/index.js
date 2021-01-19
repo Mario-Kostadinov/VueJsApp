@@ -91,7 +91,6 @@ export default createStore({
      * 
      */  
     setUser(context, payload) {
-      console.log(payload.token)
       let api = `/api/users/${payload.token}`
       fetch(api, {
         method: "POST",
@@ -135,14 +134,18 @@ export default createStore({
         })
     },
     fetchLectures(context, payload) {
+      console.log(payload)
         let api = `/api/courses/${payload.courseId}/lectures`;
         fetch(api)
           .then((res) => {
             var response = JSON.parse(res._bodyText)
+            console.log(response)
             context.commit('updateLectures', response)
         })
     },
     deleteLecture(context, payload) {
+      console.log('-------')
+      console.log(payload)
         let api = `/api/courses/${payload.courseId}/lectures/${payload.lectureId}/delete`;
         fetch(api, {
           method: "DELETE",
@@ -192,7 +195,6 @@ export default createStore({
       })
     },
     addLecture(context, payload){
-      console.log('----dispatch lecture-----')
       let api = `/api/courses/${payload.courseId}/lecture`;
       fetch(api, {
         method: "POST",
@@ -213,7 +215,6 @@ export default createStore({
     tryLogin(context) {
       const token = localStorage.getItem('token')
       if(token){
-        console.log('we have a token ')
         context.dispatch('setUser', {token: token})
       }
     },
@@ -226,8 +227,6 @@ export default createStore({
         })
           .then((res) => {
             var response = JSON.parse(res._bodyText)
-            console.log('is this a response')
-            console.log(response)
             if(response.message === 'failed to register'){
               throw new Error('Failed to register')
             } else {
@@ -248,7 +247,6 @@ export default createStore({
         })
           .then((res) => {
             var response = JSON.parse(res._bodyText)
-            console.log(response)
             if(response.message === 'failed to authenticate'){
               // Authentication Failed           
               context.commit('flashMessage', {

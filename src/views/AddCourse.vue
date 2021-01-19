@@ -48,10 +48,6 @@ export default {
         courseImageUrl: courseImageUrl.value,
         courseIsPublic: courseIsPublic.value
       }
-      console.log('Add course form')
-      console.log(payload)
-      console.log('Add course form')
-
       store.dispatch('addCourse', payload)
 
       router.push({

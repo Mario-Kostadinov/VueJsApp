@@ -130,7 +130,6 @@ export default {
         username: username.value,
         password: password.value
       }
-      console.log('form validity: ',formValidity.value)
       if(formValidity.value) {
         try {
           await store.dispatch('register', payload)
@@ -139,7 +138,6 @@ export default {
           })
         } catch(e){
           console.log(e)
-          console.log('catching eerr')
         }
       }
     }

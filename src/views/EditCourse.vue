@@ -44,7 +44,6 @@ export default {
     })
 
     const courseTitle = computed(() => {
-      console.log('Title is changing')
       if(courseDetail.value !== null){
         return courseDetail.value.title
       } else {
@@ -67,7 +66,6 @@ export default {
     })
     const courseIsPublic = computed(() => {
       if(courseDetail.value !== null){
-        console.log(courseDetail)
         return courseDetail.value.isPublic
       } else {
         return null;

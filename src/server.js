@@ -73,8 +73,6 @@ export function makeServer({ environment = "development" } = {}) {
         return schema.users.all()
       })
       this.post("/users/:id", (schema, request) => {
-        console.log('------')
-        console.log(request.params.id)
         return schema.users.findBy({id: request.params.id})
       })
       this.get("/courses", (schema) => {
@@ -90,13 +88,11 @@ export function makeServer({ environment = "development" } = {}) {
         let attrs = JSON.parse(request.requestBody)
         const user = db.users.findBy({username: attrs.username})
         if (user === null) {
-          console.log('first if')
           return {
             message: 'failed to authenticate'
           }
         } else {
           if (user.attrs.password === attrs.password && user.attrs.username === attrs.username) {
-            console.log('The user matches')
             return {
               message: 'success',
               user: user.attrs 
@@ -117,7 +113,7 @@ export function makeServer({ environment = "development" } = {}) {
           title: attrs.courseTitle,
           description: attrs.courseDescription,
           imageUrl: attrs.courseImageUrl,
-          isPublic: attrs.isPublic
+          isPublic: attrs.courseIsPublic
         } 
         server.schema.courses.create(newCourse); 
       }),
@@ -136,7 +132,6 @@ export function makeServer({ environment = "development" } = {}) {
         findCourseById.attrs.imageUrl = newCourse.imageUrl;
         findCourseById.attrs.isPublic = newCourse.isPublic;
         findCourseById.save()
-        console.log(newCourse)
       }),
       this.post("/courses/:id/lecture", (db, request) => {
         let attrs = JSON.parse(request.requestBody)
@@ -171,7 +166,6 @@ export function makeServer({ environment = "development" } = {}) {
       }),
       this.post("/register", (schema, request) => {
         let attrs = JSON.parse(request.requestBody)
-        console.log(attrs)
         const newUser = {
           username: attrs.username,
           password: attrs.password,

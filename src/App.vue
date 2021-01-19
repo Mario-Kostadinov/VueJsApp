@@ -10,7 +10,6 @@ import { useStore } from 'vuex'
 
 export default {
   setup(){
-    console.log('hello world')
     const store = useStore();
     store.dispatch('tryLogin')
   },
