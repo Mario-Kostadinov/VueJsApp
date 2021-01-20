@@ -8,7 +8,7 @@ export default createStore({
       courseLectures: [],
       courses: null,
       user: null,
-      flashMessage: {}
+      flashMessage: null
     }
   },
   mutations: {
